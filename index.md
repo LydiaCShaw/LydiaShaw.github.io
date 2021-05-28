@@ -16,7 +16,4 @@
 
 ####                           ©Lydia.C.Shaw 2021
                     	
-<link href="https://github.com/LydiaCShaw/LydiaShaw.github.io/blob/gh-pages/pagelogo.png?raw=true" rel="shortcut icon" type="image/x-icon">
-			<link rel="alternate" href="https://www.lydiashaw.asia/academic_career" hreflang="en">
-			<link rel="alternate" href="https://www.lydiashaw.asia/academic_career" hreflang="x-default">
-	<link rel="canonical" href="https://www.lydiashaw.asia/academic_career">
+
