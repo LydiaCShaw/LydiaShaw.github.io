@@ -1,0 +1,357 @@
+﻿<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title></title>
+<style id="system" type="text/css">h1,h2,h3,h4,h5,h6,p,blockquote {    margin: 0;    padding: 0;}body {    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;    font-size: 13px;    line-height: 18px;    color: #737373;    margin: 10px 13px 10px 13px;}a {    color: #0069d6;}a:hover {    color: #0050a3;    text-decoration: none;}a img {    border: none;}p {    margin-bottom: 9px;}h1,h2,h3,h4,h5,h6 {    color: #404040;    line-height: 36px;}h1 {    margin-bottom: 18px;    font-size: 30px;}h2 {    font-size: 24px;}h3 {    font-size: 18px;}h4 {    font-size: 16px;}h5 {    font-size: 14px;}h6 {    font-size: 13px;}hr {    margin: 0 0 19px;    border: 0;    border-bottom: 1px solid #ccc;}blockquote {    padding: 13px 13px 21px 15px;    margin-bottom: 18px;    font-family:georgia,serif;    font-style: italic;}blockquote:before {    content:"C";    font-size:40px;    margin-left:-10px;    font-family:georgia,serif;    color:#eee;}blockquote p {    font-size: 14px;    font-weight: 300;    line-height: 18px;    margin-bottom: 0;    font-style: italic;}code, pre {    font-family: Monaco, Andale Mono, Courier New, monospace;}code {    background-color: #fee9cc;    color: rgba(0, 0, 0, 0.75);    padding: 1px 3px;    font-size: 12px;    -webkit-border-radius: 3px;    -moz-border-radius: 3px;    border-radius: 3px;}pre {    display: block;    padding: 14px;    margin: 0 0 18px;    line-height: 16px;    font-size: 11px;    border: 1px solid #d9d9d9;    white-space: pre-wrap;    word-wrap: break-word;}pre code {    background-color: #fff;    color:#737373;    font-size: 11px;    padding: 0;}@media screen and (min-width: 768px) {    body {        width: 748px;        margin:10px auto;    }}</style><style id="custom" type="text/css"></style></head>
+<body marginheight="0"><h1>SprsMtxOperator.cpp</h1>
+<pre><code class="lang-javascript">#include "stdafx.h"
+#include "SprsMtxOperator.h"
+
+ int arr[16384];
+
+SprsMtxOperator::SprsMtxOperator(void)
+{
+}
+
+
+SprsMtxOperator::~SprsMtxOperator(void)
+{
+}
+
+// 矩阵乘以向量
+int SprsMtxOperator::MtxVecMultiple(const SparseMtx&amp; Mtx, Vector&amp; InVec, Vector&amp; ResultVec)
+{
+    int i;
+    int iRowNum;
+    int iColNum;
+    int iTotElemNum;
+    int iVecNum;
+
+    iRowNum = Mtx.n_rows;
+    iColNum = Mtx.n_cols;
+    iTotElemNum = Mtx.n_actual_ELEM;
+    iVecNum = InVec.iNum;
+
+    if ( iColNum != iVecNum  || iRowNum != ResultVec.iNum )
+    {
+        printf("Dimensions of matrix and vector mismatch\n");
+        return (-1);
+    }
+
+    Vector NewVector(iRowNum);
+    NewVector.Initilize();
+
+    for ( i = 0; i &lt; iTotElemNum; i++ )
+    {
+        NewVector.pdData[Mtx.items[i].row] += Mtx.items[i].val * InVec.pdData[Mtx.items[i].col];
+    }
+
+    for ( i = 0; i &lt; ResultVec.iNum; i++ )
+    {
+        ResultVec.pdData[i] = NewVector.pdData[i];
+    }    
+    return 0;    
+}
+
+// 向量乘以矩阵,该乘法也可是使用矩阵转置和MtxVecMultiple函数实现，
+// 但是考虑到系统矩阵太大，矩阵转置消耗内存，因此不使用
+int SprsMtxOperator::VecMtxMultiple(Vector&amp; InVec, const SparseMtx&amp; Mtx, Vector&amp; ResultVec)
+{
+    int i;
+    int iRowNum;
+    int iColNum;
+    int iTotElemNum;
+    int iVecNum;
+
+    iRowNum = Mtx.n_rows;
+    iColNum = Mtx.n_cols;
+    iTotElemNum = Mtx.n_actual_ELEM;
+    iVecNum = InVec.iNum;
+
+    if ( iRowNum != iVecNum  || iColNum != ResultVec.iNum )
+    {
+        printf("Dimensions of matrix and vector mismatch\n");
+        return (-1);
+    }
+
+    Vector NewVector(iColNum);
+    NewVector. Initilize();
+
+    for ( i = 0; i &lt; iTotElemNum; i++ )
+    {
+        NewVector.pdData[Mtx.items[i].col] += Mtx.items[i].val * InVec.pdData[Mtx.items[i].row];
+    }
+
+    for ( i = 0; i &lt; ResultVec.iNum; i++ )
+    {
+        ResultVec.pdData[i] = NewVector.pdData[i];
+    }    
+    return 0;    
+}
+
+int SprsMtxOperator::VecMultiple(Vector&amp; FirstVec, Vector&amp; SecondVec, Vector&amp; ResultVec)
+{
+    int i, iFirstNum, iSecondNum;
+    iFirstNum = FirstVec.iNum;
+    iSecondNum = SecondVec.iNum;
+
+    if ( ResultVec.iNum != iFirstNum || ResultVec.iNum != iSecondNum )
+    {
+        printf("Dimensions of two vectors mismatch\n");
+        return (-1);
+    }
+    Vector NewVec(iFirstNum);
+    NewVec.Initilize();
+    for ( i = 0; i &lt; iFirstNum; i++ )
+    {
+        NewVec.pdData[i] = FirstVec.pdData[i] * SecondVec.pdData[i];
+    }
+    for ( i = 0; i &lt; ResultVec.iNum; i++ )
+    {
+        ResultVec.pdData[i] = NewVec.pdData[i];
+    }        
+    return 0;
+}
+
+int SprsMtxOperator::VecDiv(Vector&amp; FirstVec, Vector&amp; SecondVec, Vector&amp; ResultVec)
+{
+    int i, iFirstNum, iSecondNum;
+    iFirstNum = FirstVec.iNum;
+    iSecondNum = SecondVec.iNum;
+
+    if ( iFirstNum != iSecondNum )
+    {
+        printf("Dimensions of two vectors mismatch\n");
+        return (-1);
+    }
+    Vector NewVec(iFirstNum);
+    NewVec.Initilize();
+    for ( i = 0; i &lt; iFirstNum; i++ )
+    {
+        NewVec.pdData[i] = FirstVec.pdData[i] / ( SecondVec.pdData[i] + EPSILON );
+    }
+    for ( i = 0; i &lt; ResultVec.iNum; i++ )
+    {
+        ResultVec.pdData[i] = NewVec.pdData[i];
+    }    
+    return 0;
+}
+
+// 向量与一个数相乘
+int SprsMtxOperator::VecScale(Vector&amp; InVec, double dScale, Vector&amp; ResultVec)
+{
+    int i, iNum;
+    iNum = InVec.iNum;
+    if ( ResultVec.iNum != iNum )
+    {
+        printf("Dim of output does not equal to input\n");
+        return (-1);
+    }
+
+    Vector NewVec(iNum);
+    NewVec.Initilize();
+    for ( i = 0; i &lt; iNum; i++ )
+    {
+        NewVec.pdData[i] = InVec.pdData[i] * dScale;
+    }
+    for ( i = 0; i &lt; iNum; i++ )
+    {
+        ResultVec.pdData[i] = NewVec.pdData[i];
+    }    
+    return 0;
+}
+
+// 计算稀疏矩阵乘积的列和
+int SprsMtxOperator::MtxColSum(const SparseMtx&amp; Mtx, Vector&amp; ResultVec)
+{
+    int i;
+    int iRowNum;
+    int iColNum;
+    int iTotElemNum;
+    iRowNum = Mtx.n_rows;
+    iColNum = Mtx.n_cols;
+    iTotElemNum = Mtx.n_actual_ELEM;
+    if ( iColNum != ResultVec.iNum )
+    {
+        printf("Result vector has error length\n");
+        return (-1);
+    } 
+    ResultVec.Initilize();
+    for ( i = 0; i &lt; iTotElemNum; i++ )
+    {
+        ResultVec.pdData[Mtx.items[i].col] += Mtx.items[i].val;
+    }
+    return 0;
+}
+
+void SprsMtxOperator::ResizeLinear01(CImage&amp; src, CImage&amp; dst)
+{
+    int w0 = src.GetWidth();
+    int h0 = src.GetHeight();
+    int pitch0 = src.GetPitch();
+
+    int w1 = dst.GetWidth();
+    int h1 = dst.GetHeight();
+    int pitch1 = dst.GetPitch();
+
+    float fw = float(w0) / w1;
+    float fh = float(h0) / h1;
+
+    int y1, y2, x1, x2, x0, y0, fy1, fy2, fx1, fx2;
+    for (int y = 0; y&lt;h1; y++)
+    {
+        y0 = y*fh;
+        y1 = int(y0);
+        if (y1 == h0 - 1)    y2 = y1;
+        else y2 = y1 + 1;
+
+        fy1 = y1 - y0;
+        fy2 = 1.0f - fy1;
+        for (int x = 0; x&lt;w1; x++)
+        {
+            x0 = x*fw;
+            x1 = int(x0);
+            if (x1 == w0 - 1)    x2 = x1;
+            else x2 = x1 + 1;
+
+            fx1 = y1 - y0;
+            fx2 = 1.0f - fx1;
+
+            float s1 = fx1*fy1;
+            float s2 = fx2*fy1;
+            float s3 = fx2*fy2;
+            float s4 = fx1*fy2;
+
+            COLORREF c1, c2, c3, c4, color;
+            c1 = src.GetPixel(x1, y1);
+            c2 = src.GetPixel(x2, y1);
+            c3 = src.GetPixel(x1, y2);
+            c4 = src.GetPixel(x2, y2);
+            BYTE r, g, b;
+            r = (BYTE)(GetRValue(c1)*s3) + (BYTE)(GetRValue(c2)*s4) + (BYTE)(GetRValue(c3)*s2) + (BYTE)(GetRValue(c4)*s1);
+            g = (BYTE)(GetGValue(c1)*s3) + (BYTE)(GetGValue(c2)*s4) + (BYTE)(GetGValue(c3)*s2) + (BYTE)(GetGValue(c4)*s1);
+            b = (BYTE)(GetBValue(c1)*s3) + (BYTE)(GetBValue(c2)*s4) + (BYTE)(GetBValue(c3)*s2) + (BYTE)(GetBValue(c4)*s1);
+
+            dst.SetPixelRGB(x, y, r, g, b);
+        }
+    }
+
+}
+
+void  SprsMtxOperator::show(Vector &amp;pic, CImage &amp;bmp)
+{
+    double b = pic.pdData[0], c = pic.pdData[0];
+    for (int i = 1; i &lt; 16384; i++)
+    {
+        if (pic.pdData[i]&gt;b)
+        {
+            b = pic.pdData[i];
+        }
+        if (pic.pdData[i] &lt; c)
+        {
+            c = pic.pdData[i];
+        }
+    }
+
+    double d = 255 / (b - c);
+
+
+
+
+
+
+    for (int i = 0; i &lt; 16384; i++)
+    {
+        arr[i] = (d*(pic.pdData[i] - c));
+    }
+
+
+
+    int t = 0;
+
+
+    for (int m = 0; m &lt; 128; m++)
+    {
+        for (int n = 0; n &lt; 128; n++)
+        {
+
+            bmp.SetPixelRGB(n, m, arr[t++], arr[t], arr[t]);
+        }
+    }
+
+/*    test1.Save(L"E:\\new.bmp");
+    m_picture.SetBitmap(test1);
+    CImage test_2;
+    test_2.Create(128 * m_beishu, 128 * m_beishu, 24);
+    Operator.ResizeLinear01(test1, test_2);
+    test_2.Save(L"E:\\ test_00.bmp");
+    test2.SetBitmap(test_2);*/
+}
+void SprsMtxOperator::SmoothBlur(Vector &amp;pImageData, int nWidth, int nHeight, int nWidthStep)
+{
+    double *sz = new double[nWidth*nHeight];
+    for (int k = 0; k&lt;nWidth*nHeight; k++)
+    {
+        sz[k] = pImageData.pdData[k];
+    }
+
+    int i = 0;
+    int j = 0;
+    double fValue = 0;
+    double *pLine[3] = { NULL, NULL, NULL };
+    for (j = 1; j &lt; nHeight - 1; j++)
+    {
+        pLine[0] = sz + nWidthStep * (j - 1);
+        pLine[1] = sz + nWidthStep * j;
+        pLine[2] = sz + nWidthStep * (j + 1);
+        for (i = 1; i &lt; nWidth - 1; i++)
+        {
+            fValue =
+                (pLine[0][i - 1] + pLine[0][i] + pLine[0][i + 1] +
+                pLine[1][i - 1] + pLine[1][i] + pLine[1][i + 1] +
+                pLine[2][i - 1] + pLine[2][i] + pLine[2][i + 1]) / 9;
+
+            pImageData.pdData[nWidth*j + i] = fValue;
+        }
+    }
+}
+void SprsMtxOperator::SmoothGauss(Vector &amp;pImageData, int nWidth, int nHeight, int nWidthStep)
+{
+    double *sz = new double[nWidth*nHeight];
+    for (int k = 0; k&lt;nWidth*nHeight; k++)
+    {
+        sz[k] = pImageData.pdData[k];
+    }
+    int i = 0;
+    int j = 0;
+    float fValue = 0.0;
+    double *pLine[3] = { NULL, NULL, NULL };
+    int nTemplate[9] =
+    {
+        1, 2, 1,
+        2, 4, 2,
+        1, 2, 1
+    };
+    for (j = 1; j &lt; nHeight - 1; j++)
+    {
+        pLine[0] = sz + nWidthStep * (j - 1);
+        pLine[1] = sz + nWidthStep * j;
+        pLine[2] = sz + nWidthStep * (j + 1);
+        for (i = 1; i &lt; nWidth - 1; i++)
+        {
+            fValue =
+                (pLine[0][i - 1] * nTemplate[0] +
+                pLine[0][i] * nTemplate[1] +
+                pLine[0][i + 1] * nTemplate[2] +
+                pLine[1][i - 1] * nTemplate[3] +
+                pLine[1][i] * nTemplate[4] +
+                pLine[1][i + 1] * nTemplate[5] +
+                pLine[2][i - 1] * nTemplate[6] +
+                pLine[2][i] * nTemplate[7] +
+                pLine[2][i + 1] * nTemplate[8]) / 16;
+
+            pImageData.pdData[nWidth*j + i] = fValue;
+        }
+    }
+}</code></pre>
+<p>Copyright © 2021 Lydia Shaw all Rights Reserved. <a href="http://www.lydiashaw.asia/research_project/DCL1">Back</a></p>
+</body></html>

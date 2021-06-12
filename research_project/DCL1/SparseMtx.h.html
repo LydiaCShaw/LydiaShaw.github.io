@@ -1,0 +1,212 @@
+﻿<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title></title>
+<style id="system" type="text/css">h1,h2,h3,h4,h5,h6,p,blockquote {    margin: 0;    padding: 0;}body {    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;    font-size: 13px;    line-height: 18px;    color: #737373;    margin: 10px 13px 10px 13px;}a {    color: #0069d6;}a:hover {    color: #0050a3;    text-decoration: none;}a img {    border: none;}p {    margin-bottom: 9px;}h1,h2,h3,h4,h5,h6 {    color: #404040;    line-height: 36px;}h1 {    margin-bottom: 18px;    font-size: 30px;}h2 {    font-size: 24px;}h3 {    font-size: 18px;}h4 {    font-size: 16px;}h5 {    font-size: 14px;}h6 {    font-size: 13px;}hr {    margin: 0 0 19px;    border: 0;    border-bottom: 1px solid #ccc;}blockquote {    padding: 13px 13px 21px 15px;    margin-bottom: 18px;    font-family:georgia,serif;    font-style: italic;}blockquote:before {    content:"C";    font-size:40px;    margin-left:-10px;    font-family:georgia,serif;    color:#eee;}blockquote p {    font-size: 14px;    font-weight: 300;    line-height: 18px;    margin-bottom: 0;    font-style: italic;}code, pre {    font-family: Monaco, Andale Mono, Courier New, monospace;}code {    background-color: #fee9cc;    color: rgba(0, 0, 0, 0.75);    padding: 1px 3px;    font-size: 12px;    -webkit-border-radius: 3px;    -moz-border-radius: 3px;    border-radius: 3px;}pre {    display: block;    padding: 14px;    margin: 0 0 18px;    line-height: 16px;    font-size: 11px;    border: 1px solid #d9d9d9;    white-space: pre-wrap;    word-wrap: break-word;}pre code {    background-color: #fff;    color:#737373;    font-size: 11px;    padding: 0;}@media screen and (min-width: 768px) {    body {        width: 748px;        margin:10px auto;    }}</style><style id="custom" type="text/css"></style></head>
+<body marginheight="0"><h1>SparseMtx.h</h1>
+<pre><code class="lang-javascript">#ifndef SPARSEMTX_HEADER_FILE_INCLUDED
+#define SPARSEMTX_HEADER_FILE_INCLUDED
+#include &lt;string&gt;
+#include &lt;stdio.h&gt;
+#include&lt;vector&gt;
+using namespace std;
+
+#ifndef EPSILON
+#define EPSILON       0.00000000001
+#endif
+
+class ELEM
+{
+public:
+    int row;
+    int col;
+    double val;
+    ELEM()
+    {
+        row = 0;
+        col = 0;
+        val = 0;
+    }
+    ELEM(int i, int j, double d)
+    {
+        row = i;
+        col = j;
+        val = d;
+    }
+    void operator=(ELEM t)
+    {
+        row = t.row;
+        col = t.col;
+        val = t.val;
+    }
+    bool operator&lt;(ELEM t)
+    {
+        if(row &lt; t.row)
+            return true;
+        else if(row == t.row &amp;&amp; col &lt; t.col)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+
+    bool operator &gt; (ELEM t)
+    {
+        if(row &gt; t.row)
+            return true;
+        else if(row == t.row &amp;&amp; col &gt; t.col)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+
+    bool operator == (ELEM t)
+    {
+        if(row == t.row &amp;&amp; col == t.col)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    bool operator!=(ELEM t)
+    {
+        return !( *this == t );
+    }
+
+
+    bool operator&gt;=(ELEM t)
+    {    
+        return ( *this &gt; t || *this == t );
+    }
+
+    bool operator&lt;=(ELEM t)
+    {    
+        return ( *this &lt; t || *this == t );
+    }
+};
+
+class Vector
+{
+public:
+    int iNum;
+    double* pdData;
+
+        // 构造函数
+    Vector(int iDimen)
+    {
+        iNum = iDimen;
+        pdData = new double[iNum];        
+    }
+
+    // 析构函数
+    ~Vector()
+    {
+        delete[] pdData;
+    }
+    void Initilize()
+    {
+        memset(pdData, 0, iNum * sizeof(double) );
+    }
+
+    void Initilize(float dVal)
+    {
+        int i;
+        for ( i = 0; i &lt; iNum; i++ )
+        {
+            pdData[i] = dVal;
+        }
+    }
+
+    double Sum()
+    {
+        double d = 0.0;
+        for ( int i = 0; i &lt; iNum; i++ )
+        {
+            d += pdData[i];
+        }
+        return d;    
+    }
+
+    void ShowVector()
+    {
+        int i;
+        for ( i = 0; i &lt; iNum; i++ )
+        {
+            printf("%f ", pdData[i] );
+        }
+    }
+    int SaveVector(char* pchFileName)
+    {
+        FILE* fp;
+        if ( NULL == (fp = fopen(pchFileName, "wb")) )
+        {
+            printf("Fail to open writen file\n");
+            return (-1);
+        }
+
+        if ( iNum != fwrite(pdData, sizeof(double), iNum, fp) )
+        {
+            printf("Error data size\n ");
+            return (-1);
+        }
+        fclose(fp);
+        return 0;
+    }    
+};
+
+class SparseMtx
+{
+//private:
+public:
+    int n_rows;
+    int n_cols;
+    int n_max_ELEM;
+    int n_actual_ELEM;
+    ELEM *items;
+
+public:
+    // 构造函数
+    SparseMtx(int rows, int cols, int n_max);
+
+    // 析构函数
+    ~SparseMtx()
+    {
+        free(items);
+    }
+    // 稀疏矩阵初始化
+    void Empty();
+
+    // 矩阵转置
+    void Transpose();
+
+
+    // 添加元素，添加了处理溢出的机制
+    bool AddElment(ELEM e);
+
+    // 对元素按行进行一次排序
+    void ElemRowSort();            
+
+    // 缩减稀疏矩阵存储空间到最低值
+    void CutSparMtxMem();
+
+    // 显示函数 for debugging
+    void ShowElements();
+
+    // 元素交换
+    void MySwap(ELEM &amp;s1, ELEM &amp;s2);
+
+    // 递归快速排序，注意递归算法处理大的数据容易栈溢出
+    void QuickSort(ELEM* vec,int low,int high);
+    // 保存到文件
+    void SaveToFile(char* pchFileName);                     
+};                                                         
+
+#endif</code></pre>
+<p>Copyright © 2021 Lydia Shaw all Rights Reserved. <a href="http://www.lydiashaw.asia/research_project/DCL1">Back</a></p>
+</body></html>

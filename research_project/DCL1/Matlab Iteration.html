@@ -1,0 +1,62 @@
+﻿<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title></title>
+<style id="system" type="text/css">h1,h2,h3,h4,h5,h6,p,blockquote {    margin: 0;    padding: 0;}body {    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;    font-size: 13px;    line-height: 18px;    color: #737373;    margin: 10px 13px 10px 13px;}a {    color: #0069d6;}a:hover {    color: #0050a3;    text-decoration: none;}a img {    border: none;}p {    margin-bottom: 9px;}h1,h2,h3,h4,h5,h6 {    color: #404040;    line-height: 36px;}h1 {    margin-bottom: 18px;    font-size: 30px;}h2 {    font-size: 24px;}h3 {    font-size: 18px;}h4 {    font-size: 16px;}h5 {    font-size: 14px;}h6 {    font-size: 13px;}hr {    margin: 0 0 19px;    border: 0;    border-bottom: 1px solid #ccc;}blockquote {    padding: 13px 13px 21px 15px;    margin-bottom: 18px;    font-family:georgia,serif;    font-style: italic;}blockquote:before {    content:"C";    font-size:40px;    margin-left:-10px;    font-family:georgia,serif;    color:#eee;}blockquote p {    font-size: 14px;    font-weight: 300;    line-height: 18px;    margin-bottom: 0;    font-style: italic;}code, pre {    font-family: Monaco, Andale Mono, Courier New, monospace;}code {    background-color: #fee9cc;    color: rgba(0, 0, 0, 0.75);    padding: 1px 3px;    font-size: 12px;    -webkit-border-radius: 3px;    -moz-border-radius: 3px;    border-radius: 3px;}pre {    display: block;    padding: 14px;    margin: 0 0 18px;    line-height: 16px;    font-size: 11px;    border: 1px solid #d9d9d9;    white-space: pre-wrap;    word-wrap: break-word;}pre code {    background-color: #fff;    color:#737373;    font-size: 11px;    padding: 0;}@media screen and (min-width: 768px) {    body {        width: 748px;        margin:10px auto;    }}</style><style id="custom" type="text/css"></style></head>
+<body marginheight="0"><h1>Matlab Iteration</h1>
+<pre><ol class="hibot"><li rel="0">&nbsp;%输入迭代次数和<span class="num">1</span>D弦图&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;%输出重建图像&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">function</span>&nbsp;Img&nbsp;=&nbsp;IR(FileName,&nbsp;IterNum)&nbsp;</li><li rel="0">&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;%投影角度数&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;AngNum&nbsp;=&nbsp;<span class="num">128</span>;&nbsp;</li><li rel="0">&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;%每个角度下平行投影个数&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;BinNum&nbsp;=&nbsp;<span class="num">128</span>;&nbsp;</li><li rel="0">&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;%图像行数&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;ImgRow&nbsp;=&nbsp;<span class="num">128</span>;&nbsp;</li><li rel="0">&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;%图像列数&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;ImgCol&nbsp;=&nbsp;<span class="num">128</span>;&nbsp;</li><li rel="0">&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;%读取弦图（即投影数据）&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;fid&nbsp;=&nbsp;fopen(FileName,&nbsp;<span class="string">'rt'</span>);&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;Sino1d&nbsp;=&nbsp;fscanf(fid,<span class="string">'%e&nbsp;'</span>,inf);&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;fclose(fid);&nbsp;</li><li rel="0">&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;figure&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;imshow(reshape(Sino1d,&nbsp;BinNum,&nbsp;AngNum)<span class="string">',[])</span>&nbsp;</li><li rel="0"><span class="string"></span>&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;%引入系统矩阵（稀疏）&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;load&nbsp;Mat128_Na128.mat&nbsp;</li><li rel="0">&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;%迭代初始值&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;Img&nbsp;=&nbsp;ones(ImgRow&nbsp;*&nbsp;ImgCol,&nbsp;<span class="num">1</span>);&nbsp;</li><li rel="0">&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;figure&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>&nbsp;i&nbsp;=<span class="num">1</span>:IterNum;&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;%正投影&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;ImgTmp&nbsp;=Mat&nbsp;*&nbsp;Img;&nbsp;</li><li rel="0">&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;ImgTmp&nbsp;=&nbsp;Sino1d&nbsp;./&nbsp;(ImgTmp&nbsp;+&nbsp;eps);&nbsp;</li><li rel="0">&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;%反投影&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;ImgTmp&nbsp;=&nbsp;(ImgTmp<span class="string">'*&nbsp;Mat)'</span>;&nbsp;</li><li rel="0">&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;%获得新的迭代图像&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;Img&nbsp;=&nbsp;Img&nbsp;.*&nbsp;ImgTmp&nbsp;./&nbsp;(sum(Mat)<span class="string">'&nbsp;+&nbsp;eps);</span>&nbsp;</li><li rel="0"><span class="string"></span>&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;%逐步显示迭代图像&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;imshow(imresize(reshape(Img,&nbsp;ImgRow,&nbsp;ImgCol)<span class="string">',4),&nbsp;[]);</span>&nbsp;</li><li rel="0"><span class="string"></span>&nbsp;&nbsp;&nbsp;&nbsp;str&nbsp;=&nbsp;sprintf(<span class="string">'Iteration&nbsp;#&nbsp;=&nbsp;%d'</span>,&nbsp;i);&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;title(str)&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;pause(<span class="num">0.1</span>);&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;end&nbsp;</li><li rel="0">&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;%<span class="num">1</span>D图像转化成<span class="num">2</span>D图像&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;Img&nbsp;=&nbsp;reshape(Img,&nbsp;ImgRow,&nbsp;ImgCol)<span class="string">';</span>&nbsp;</li><li rel="0"><span class="string"></span>&nbsp;</li><li rel="0">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>;&nbsp;</li><li rel="0">&nbsp;&nbsp;}</li></ol><code class="lang-javascript" style="display: none;"> %输入迭代次数和1D弦图
+    %输出重建图像
+    function Img = IR(FileName, IterNum)
+
+    %投影角度数
+    AngNum = 128;
+
+    %每个角度下平行投影个数
+    BinNum = 128;
+
+    %图像行数
+    ImgRow = 128;
+
+    %图像列数
+    ImgCol = 128;
+
+    %读取弦图（即投影数据）
+    fid = fopen(FileName, 'rt');
+    Sino1d = fscanf(fid,'%e ',inf);
+    fclose(fid);
+
+    figure
+    imshow(reshape(Sino1d, BinNum, AngNum)',[])
+
+    %引入系统矩阵（稀疏）
+    load Mat128_Na128.mat
+
+    %迭代初始值
+    Img = ones(ImgRow * ImgCol, 1);
+
+    figure
+    for i =1:IterNum;
+    %正投影
+    ImgTmp =Mat * Img;
+
+    ImgTmp = Sino1d ./ (ImgTmp + eps);
+
+    %反投影
+    ImgTmp = (ImgTmp'* Mat)';
+
+    %获得新的迭代图像
+    Img = Img .* ImgTmp ./ (sum(Mat)' + eps);
+
+    %逐步显示迭代图像
+    imshow(imresize(reshape(Img, ImgRow, ImgCol)',4), []);
+    str = sprintf('Iteration # = %d', i);
+    title(str)
+    pause(0.1);
+    end
+
+    %1D图像转化成2D图像
+    Img = reshape(Img, ImgRow, ImgCol)';
+
+    return;
+  }</code></pre>
+<p>Copyright © 2021 Lydia Shaw all Rights Reserved. <a href="http://www.lydiashaw.asia/research_project/DCL1">Back</a></p>
+</body></html>
