@@ -1,0 +1,129 @@
+﻿<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title></title>
+<style id="system" type="text/css">h1,h2,h3,h4,h5,h6,p,blockquote {    margin: 0;    padding: 0;}body {    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;    font-size: 13px;    line-height: 18px;    color: #737373;    margin: 10px 13px 10px 13px;}a {    color: #0069d6;}a:hover {    color: #0050a3;    text-decoration: none;}a img {    border: none;}p {    margin-bottom: 9px;}h1,h2,h3,h4,h5,h6 {    color: #404040;    line-height: 36px;}h1 {    margin-bottom: 18px;    font-size: 30px;}h2 {    font-size: 24px;}h3 {    font-size: 18px;}h4 {    font-size: 16px;}h5 {    font-size: 14px;}h6 {    font-size: 13px;}hr {    margin: 0 0 19px;    border: 0;    border-bottom: 1px solid #ccc;}blockquote {    padding: 13px 13px 21px 15px;    margin-bottom: 18px;    font-family:georgia,serif;    font-style: italic;}blockquote:before {    content:"C";    font-size:40px;    margin-left:-10px;    font-family:georgia,serif;    color:#eee;}blockquote p {    font-size: 14px;    font-weight: 300;    line-height: 18px;    margin-bottom: 0;    font-style: italic;}code, pre {    font-family: Monaco, Andale Mono, Courier New, monospace;}code {    background-color: #fee9cc;    color: rgba(0, 0, 0, 0.75);    padding: 1px 3px;    font-size: 12px;    -webkit-border-radius: 3px;    -moz-border-radius: 3px;    border-radius: 3px;}pre {    display: block;    padding: 14px;    margin: 0 0 18px;    line-height: 16px;    font-size: 11px;    border: 1px solid #d9d9d9;    white-space: pre-wrap;    word-wrap: break-word;}pre code {    background-color: #fff;    color:#737373;    font-size: 11px;    padding: 0;}@media screen and (min-width: 768px) {    body {        width: 748px;        margin:10px auto;    }}</style><style id="custom" type="text/css"></style></head>
+<body marginheight="0"><h1>root.php</h1>
+<pre><code class="lang-javascript">&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;R O O T 管 理 &lt;/title&gt;
+
+    &lt;!-- The Fonts --&gt;
+
+    &lt;!-- The Main CSS File --&gt;
+    &lt;link rel="stylesheet" href="CSS/style.css"&gt;
+    &lt;link type="text/css" rel="stylesheet" href="css/geshi.css"&gt;
+    &lt;!--   连接css样式表   --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- Change Pattern --&gt;&lt;!-- Top Panel --&gt;
+    &lt;div class="top_panel"&gt;
+        &lt;div class="wrapper"&gt;
+          &lt;div class="top_links"&gt; &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;header class="main_header"&gt;
+        &lt;div class="wrapper"&gt;
+            &lt;div class="logo"&gt;
+                &lt;a href="#" Title="ROOT 管理"&gt;
+                    &lt;img src="Images/kanrisha_logo.png" alt="kanrisha_logo"&gt;
+              &lt;/a&gt;
+            &lt;/div&gt;&lt;div class="menu-part"&gt;
+            &lt;nav class="top_buttons"&gt;
+
+                &lt;ul&gt;
+                   &lt;li&gt;&lt;a href="root.php"&gt;用户管理&lt;/a&gt;&lt;/li&gt;
+
+                   &lt;li&gt;&lt;a href="root2.php"&gt;病历管理&lt;/a&gt;&lt;/li&gt;
+                &lt;/ul&gt;
+
+            &lt;/nav&gt;
+              &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/header&gt;
+
+
+    &lt;div class="wrapper contents_wrapper"&gt;
+
+
+        &lt;div class="g_6 contents_header"&gt;&lt;/div&gt;
+                &lt;div class="g_6 contents_options"&gt;&lt;/div&gt;
+
+                &lt;div class="g_12 separator"&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="container"style="width:80%;margin-left: auto;margin-right: auto;"&gt;
+    &lt;div class="zi"&gt;
+        &lt;h1&gt;用户　管理&lt;/h1&gt;
+    &lt;/div&gt;
+    &lt;!-- 一个表单传输数据 --&gt;
+    &lt;div class="container1"&gt;
+        &lt;div id="content"&gt;
+            &lt;div id="post"&gt;
+                &lt;form action="add.php" method="post"&gt;
+                    &lt;input name="user" type="text" class="transtion" placeholder="用户名" &gt;
+                    &lt;input name="pwd" type="text" class="transtion" placeholder="密码" &gt;
+                    &lt;input id="postBt" type="submit" value="新增用户"&gt;
+                &lt;/form&gt;
+            &lt;/div&gt;
+ &lt;form action="" method="post"&gt;
+                &lt;label&gt;
+        &lt;input type="radio" name="ID" value="doctor" id="登录身份_0" /&gt;
+        医生&lt;/label&gt;
+
+      &lt;label&gt;
+        &lt;input type="radio" name="ID" value="patient" id="登录身份_2" /&gt;
+        病人&lt;/label&gt;
+          &lt;label&gt;
+        &lt;input type="radio" name="ID" value="root" id="登录身份_1" /&gt;
+        管理员&lt;/label&gt;  &lt;input id="xuanze" type="submit" value="确定"&gt;
+        &lt;/form&gt;
+            &lt;div id="comment"&gt;
+                &lt;!--   输出表格表头   --&gt;
+                &lt;table width="100%"&gt;
+                    &lt;thead&gt;
+                    &lt;tr&gt;
+                        &lt;th&gt;&lt;p&gt;&lt;span class="msg"&gt;编号&lt;/span&gt;&lt;/p&gt;&lt;/th&gt;
+                        &lt;th&gt;&lt;p&gt;&lt;span class="msg"&gt;用户名&lt;/span&gt;&lt;/p&gt;&lt;/th&gt;
+                        &lt;th&gt;&lt;p&gt;&lt;span class="msg"&gt;密码&lt;/span&gt;&lt;/p&gt;&lt;/th&gt;
+                        &lt;th&gt;&lt;p&gt;&lt;span class="msg"&gt;权限&lt;/span&gt;&lt;/p&gt;&lt;/th&gt;
+                    &lt;/tr&gt;
+                    &lt;/thead&gt;
+                    &lt;?php
+                    session_start();
+                    header("content_type:text/html;charset=utf-8");
+                    error_reporting(E_ERROR); 
+                    $id=$_POST['ID'];
+                    ini_set("display_errors","Off"); 
+                    $i = 0;
+                    $conn = @mysql_connect('localhost', 'root', '');//连接数据库
+                    mysql_select_db('casea', $conn);//选择哪一个数据库
+                    mysql_query("set names 'utf8'");//设置数据库为utf8编码
+                    echo mysql_error();//输出上一个mysql数据库
+                    //判断是否连接数据库是否成功
+                    if (!$conn) {
+                    die('数据库连接失败');
+                    } else {
+                        $res = mysql_query("select * from $id");//执行一条查询
+                        //用while循环将数据输出出来
+                        while($arr = mysql_fetch_array($res)){
+                            $i+=1;
+                            echo "&lt;tr&gt;
+                                 &lt;th&gt;&lt;p&gt;&lt;span class='msg'&gt;".$i."&lt;/span&gt;&lt;/p&gt;&lt;/th&gt;
+                                 &lt;th&gt;&lt;p&gt;&lt;span class='msg'&gt;".$arr['user']."&lt;/span&gt;&lt;/p&gt;&lt;/th&gt;
+                                 &lt;th&gt;&lt;p&gt;&lt;span class='msg'&gt;".$arr['pwd']."&lt;/span&gt;&lt;/p&gt;&lt;/th&gt;
+                                 &lt;th&gt;&lt;p&gt;&lt;span class='msg'&gt;&lt;a href='change.php?sid=".$arr['pwd']."'&gt;修改&lt;/a&gt;|&lt;a href='delete.php?sids=".$arr['pwd']."'&gt;删除&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;&lt;/th&gt;
+  &lt;/tr&gt;";
+                       }
+                    }
+                    ?&gt;
+                &lt;/table&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>Copyright © 2021 Lydia Shaw all Rights Reserved. <a href="http://www.lydiashaw.asia/research_project/DCL2">Back</a></p>
+</body></html>

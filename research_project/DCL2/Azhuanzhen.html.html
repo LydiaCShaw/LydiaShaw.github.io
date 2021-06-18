@@ -1,0 +1,202 @@
+﻿<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title></title>
+<style id="system" type="text/css">h1,h2,h3,h4,h5,h6,p,blockquote {    margin: 0;    padding: 0;}body {    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;    font-size: 13px;    line-height: 18px;    color: #737373;    margin: 10px 13px 10px 13px;}a {    color: #0069d6;}a:hover {    color: #0050a3;    text-decoration: none;}a img {    border: none;}p {    margin-bottom: 9px;}h1,h2,h3,h4,h5,h6 {    color: #404040;    line-height: 36px;}h1 {    margin-bottom: 18px;    font-size: 30px;}h2 {    font-size: 24px;}h3 {    font-size: 18px;}h4 {    font-size: 16px;}h5 {    font-size: 14px;}h6 {    font-size: 13px;}hr {    margin: 0 0 19px;    border: 0;    border-bottom: 1px solid #ccc;}blockquote {    padding: 13px 13px 21px 15px;    margin-bottom: 18px;    font-family:georgia,serif;    font-style: italic;}blockquote:before {    content:"C";    font-size:40px;    margin-left:-10px;    font-family:georgia,serif;    color:#eee;}blockquote p {    font-size: 14px;    font-weight: 300;    line-height: 18px;    margin-bottom: 0;    font-style: italic;}code, pre {    font-family: Monaco, Andale Mono, Courier New, monospace;}code {    background-color: #fee9cc;    color: rgba(0, 0, 0, 0.75);    padding: 1px 3px;    font-size: 12px;    -webkit-border-radius: 3px;    -moz-border-radius: 3px;    border-radius: 3px;}pre {    display: block;    padding: 14px;    margin: 0 0 18px;    line-height: 16px;    font-size: 11px;    border: 1px solid #d9d9d9;    white-space: pre-wrap;    word-wrap: break-word;}pre code {    background-color: #fff;    color:#737373;    font-size: 11px;    padding: 0;}@media screen and (min-width: 768px) {    body {        width: 748px;        margin:10px auto;    }}</style><style id="custom" type="text/css"></style></head>
+<body marginheight="0"><h1>Azhuanzhen.html</h1>
+<pre><code class="lang-javascript">&lt;!DOCTYPE HTML&gt;
+
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;A 医院欢迎您&lt;/title&gt;
+    &lt;link rel="stylesheet" href="css/stylebd.css" type="text/css"&gt;
+    &lt;style type="text/css"&gt;
+    body,td,th {
+    font-family: Conv_Ubuntu-Light;
+}
+body {
+    background-image: url(images/logo3.jpg);
+    background-repeat: no-repeat;
+}
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="header"&gt;
+
+         &lt;div align="center"&gt;
+        &lt;ul&gt;
+            &lt;li class="selected"&gt;
+                &lt;a href="adoctor.html"&gt;首页&lt;/a&gt;
+            &lt;/li&gt;
+
+
+          &lt;li&gt;
+                &lt;a href="azhuanzhen.html"&gt;提交病历&lt;/a&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+                &lt;a href="abingli.php"&gt;本地信息&lt;/a&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div id="body"&gt;
+    &lt;form action="abinglitijiao.php" method="post" enctype="multipart/form-data"&gt;
+          &lt;hr class="hr"&gt;
+        &lt;div class="text" style=" text-align:center;"&gt;
+        姓名:&lt;input name="userName" type="text" size="1" maxlength="50"&gt;
+        年龄:&lt;input name="userAge" type="text" size="1" maxlength="50"&gt;
+          检查周数:
+            &lt;select name="checkweeks"&gt;
+                &lt;option value="1"&gt;1&lt;/option&gt;
+                &lt;option value="2"&gt;2&lt;/option&gt;
+                &lt;option value="3"&gt;3&lt;/option&gt;
+                &lt;option value="4"&gt;4&lt;/option&gt;
+                &lt;option value="5"&gt;5&lt;/option&gt;
+                &lt;option value="6"&gt;6&lt;/option&gt;
+                &lt;option value="7"&gt;7&lt;/option&gt;
+
+            &lt;/select&gt;周
+        &lt;/div&gt;
+
+
+
+&lt;p&gt;&lt;/p&gt;
+
+            &lt;hr class="hr"&gt;
+            &lt;p&gt;
+            是否出现浮肿  :
+                &lt;input type="radio"name="isFuzhong"value="是" checked="checked"&gt;是
+                &lt;input type="radio"name="isFuzhong"value="否"&gt;否
+
+            &lt;/p&gt;
+            &lt;p&gt;
+            请选择浮肿部位  :
+                &lt;input type="checkbox" name="FZBuwei[]" value="脸部"&gt;脸部
+                &lt;input type="checkbox" name="FZBuwei[]" value="颈部"&gt;颈部
+                &lt;input type="checkbox" name="FZBuwei[]" value="胸部"&gt;胸部
+                &lt;input type="checkbox" name="FZBuwei[]" value="背部"&gt;背部
+                &lt;input type="checkbox" name="FZBuwei[]" value="腰部"&gt;腰部
+                &lt;input type="checkbox" name="FZBuwei[]" value="左臂"&gt;左臂
+                &lt;input type="checkbox" name="FZBuwei[]" value="右臂"&gt;右臂
+                &lt;input type="checkbox" name="FZBuwei[]" value="左腿"&gt;左腿
+                &lt;input type="checkbox" name="FZBuwei[]" value="右腿"&gt;右腿
+                &lt;input type="checkbox" name="FZBuwei[]" value="其他"&gt;其他
+            &lt;/p&gt;
+            &lt;p&gt;
+
+              医嘱: &lt;textarea name="yizhu1"  rows="1"cols="50"&gt;&lt;/textarea&gt;
+            &lt;/p&gt;
+            &lt;p&gt;
+            &lt;hr class="hr"&gt;
+                血液检查结果  :
+                &lt;input type="radio"name="blood"value="正常" checked="checked"&gt;正常
+                &lt;input type="radio"name="blood"value="异常"&gt;异常
+            &lt;/p&gt;
+            &lt;p&gt;
+
+                请选择异常项目  :
+                &lt;input type="checkbox" name="exceptionBW[]" value="肝功能"&gt;肝功能
+                &lt;input type="checkbox" name="exceptionBW[]" value="肾功能"&gt;肾功能
+                &lt;input type="checkbox" name="exceptionBW[]" value="甲胎蛋白"&gt;甲胎蛋白
+                &lt;input type="checkbox" name="exceptionBW[]" value="艾滋病毒"&gt;艾滋病毒
+                &lt;input type="checkbox" name="exceptionBW[]" value="乙肝六项"&gt;乙肝六项
+                &lt;input type="checkbox" name="exceptionBW[]" value="丙肝病毒"&gt;丙肝病毒
+                &lt;input type="checkbox" name="exceptionBW[]" value="血色素"&gt;血色素
+                &lt;input type="checkbox" name="exceptionBW[]" value="其他"&gt;其他
+            &lt;/p&gt;
+            &lt;p&gt;
+
+              医嘱: &lt;textarea name="yizhu2" rows="1"cols="50"&gt;&lt;/textarea&gt;
+            &lt;/p&gt;
+
+            &lt;hr class="hr"&gt;
+
+          &lt;p&gt;孕育史： 
+            &lt;label for="T"&gt;胎&lt;/label&gt;
+            &lt;select name="TaiNumber" id="T"&gt; 
+              &lt;option value="0"&gt;0&lt;/option&gt;
+              &lt;option value="1"&gt;1&lt;/option&gt;
+              &lt;option value="2"&gt;2&lt;/option&gt;
+            &lt;/select&gt; 次    
+
+            &lt;label for="SE"&gt;足月产&lt;/label&gt;
+            &lt;select name="SENumber" id="SE"&gt; 
+              &lt;option value="0"&gt;0&lt;/option&gt;
+              &lt;option value="1"&gt;1&lt;/option&gt;
+              &lt;option value="2"&gt;2&lt;/option&gt;
+            &lt;/select&gt; 次    
+
+            &lt;label for="ZC"&gt;     早产&lt;/label&gt;
+            &lt;select name="ZCNumber" id="ZC"&gt; 
+              &lt;option value="0"&gt;0&lt;/option&gt;
+              &lt;option value="1"&gt;1&lt;/option&gt;
+              &lt;option value="2"&gt;2&lt;/option&gt;
+            &lt;/select&gt;次 
+
+            &lt;label for="ZL"&gt;自流&lt;/label&gt;
+            &lt;select name="ZLNumber" id="ZL"&gt; 
+              &lt;option value="0"&gt;0&lt;/option&gt;
+              &lt;option value="1"&gt;1&lt;/option&gt;
+              &lt;option value="2"&gt;2&lt;/option&gt;
+            &lt;/select&gt;
+            次    
+            &lt;label for="RL"&gt;人流引产&lt;/label&gt;
+            &lt;select name="RLNumber" id="RL"&gt; 
+              &lt;option value="0"&gt;0&lt;/option&gt;
+              &lt;option value="1"&gt;1&lt;/option&gt;
+              &lt;option value="2"&gt;1&lt;/option&gt;
+            &lt;/select&gt;
+            次    
+            &lt;label for="XY"&gt;现有&lt;/label&gt;
+            &lt;select name="XYNumber" id="XY"&gt; 
+              &lt;option value="0"&gt;0&lt;/option&gt;
+              &lt;option value="1"&gt;1&lt;/option&gt;
+              &lt;option value="2"&gt;2&lt;/option&gt;
+            &lt;/select&gt;
+            男  
+            &lt;select name="XY2Number" id="XY2"&gt; 
+              &lt;option value="0"&gt;0&lt;/option&gt;
+              &lt;option value="1"&gt;1&lt;/option&gt;
+              &lt;option value="2"&gt;2&lt;/option&gt;
+            &lt;/select&gt;
+            女      
+            &lt;br&gt;
+          &lt;/p&gt;
+
+        &lt;p&gt;&lt;/p&gt;
+             医嘱 : &lt;textarea name="yizhu3" rows="1"cols="50"&gt;&lt;/textarea&gt;
+
+            &lt;p&gt;&lt;br&gt;
+            &lt;/p&gt;
+            &lt;p&gt;
+               主 要 病 情 : &lt;textarea name="mainProblem" rows="4"cols="50"&gt;&lt;/textarea&gt;
+            &lt;/p&gt;
+
+&lt;div style="text-align:center;"&gt;
+
+
+        &lt;input type="submit" name="submit" value="提交"/&gt;
+      &lt;/div&gt;
+        &lt;hr class="hr"&gt;
+    &lt;/form&gt;
+
+
+
+
+
+
+
+
+    &lt;/div&gt;
+    &lt;div id="footer"&gt;
+        &lt;div&gt;
+            &lt;p&gt;
+
+            &lt;/p&gt;
+                    &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>Copyright © 2021 Lydia Shaw all Rights Reserved. <a href="http://www.lydiashaw.asia/research_project/DCL2">Back</a>
+</p>
+</body></html>

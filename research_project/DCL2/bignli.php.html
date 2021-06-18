@@ -1,0 +1,178 @@
+﻿<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title></title>
+<style id="system" type="text/css">h1,h2,h3,h4,h5,h6,p,blockquote {    margin: 0;    padding: 0;}body {    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;    font-size: 13px;    line-height: 18px;    color: #737373;    margin: 10px 13px 10px 13px;}a {    color: #0069d6;}a:hover {    color: #0050a3;    text-decoration: none;}a img {    border: none;}p {    margin-bottom: 9px;}h1,h2,h3,h4,h5,h6 {    color: #404040;    line-height: 36px;}h1 {    margin-bottom: 18px;    font-size: 30px;}h2 {    font-size: 24px;}h3 {    font-size: 18px;}h4 {    font-size: 16px;}h5 {    font-size: 14px;}h6 {    font-size: 13px;}hr {    margin: 0 0 19px;    border: 0;    border-bottom: 1px solid #ccc;}blockquote {    padding: 13px 13px 21px 15px;    margin-bottom: 18px;    font-family:georgia,serif;    font-style: italic;}blockquote:before {    content:"C";    font-size:40px;    margin-left:-10px;    font-family:georgia,serif;    color:#eee;}blockquote p {    font-size: 14px;    font-weight: 300;    line-height: 18px;    margin-bottom: 0;    font-style: italic;}code, pre {    font-family: Monaco, Andale Mono, Courier New, monospace;}code {    background-color: #fee9cc;    color: rgba(0, 0, 0, 0.75);    padding: 1px 3px;    font-size: 12px;    -webkit-border-radius: 3px;    -moz-border-radius: 3px;    border-radius: 3px;}pre {    display: block;    padding: 14px;    margin: 0 0 18px;    line-height: 16px;    font-size: 11px;    border: 1px solid #d9d9d9;    white-space: pre-wrap;    word-wrap: break-word;}pre code {    background-color: #fff;    color:#737373;    font-size: 11px;    padding: 0;}@media screen and (min-width: 768px) {    body {        width: 748px;        margin:10px auto;    }}</style><style id="custom" type="text/css"></style></head>
+<body marginheight="0"><h1>bingli.php</h1>
+<pre><code class="lang-javascript">&lt;html&gt;
+&lt;head&gt;
+&lt;div class="top_panel"&gt;
+        &lt;div class="wrapper"&gt;
+          &lt;div class="top_links"&gt; &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;header class="main_header"&gt;
+        &lt;div class="wrapper"&gt;
+            &lt;div class="logo"&gt;
+                &lt;a href="#" Title="ROOT 管理"&gt;
+                    &lt;img src="Images/kanrisha_logo.png" alt="kanrisha_logo"&gt;
+              &lt;/a&gt;
+            &lt;/div&gt;
+            &lt;nav class="top_buttons"&gt;
+                &lt;ul&gt;
+                    &lt;li class="big_button"&gt;&lt;/li&gt;
+                    &lt;li class="big_button"&gt;&lt;/li&gt;
+                    &lt;li class="big_button"&gt;&lt;/li&gt;
+                    &lt;li class="big_button"&gt;&lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/nav&gt;
+        &lt;/div&gt;
+    &lt;/header&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt; 病 例   查  看 &lt;/title&gt;
+
+    &lt;!-- The Fonts --&gt;
+
+    &lt;!-- The Main CSS File --&gt;
+    &lt;link rel="stylesheet" href="CSS/style.css"&gt;
+    &lt;link type="text/css" rel="stylesheet" href="css/geshi.css"&gt;
+    &lt;!--   连接css样式表   --&gt;
+&lt;/head&gt;
+&lt;body&gt;  
+&lt;div align="center"&gt;
+&lt;div class="container"style="width:80%;margin-left: auto;margin-right: auto;"&gt;
+  &lt;h1&gt;病 人 信 息&lt;/h1&gt;
+  &lt;/div&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+&lt;br&gt;
+
+&lt;br&gt;
+&lt;table cellspacing="0" class="Tab" border:#8E8E8E; &gt;
+                    &lt;thead&gt;
+                    &lt;tr&gt;
+
+                    &lt;th&gt;&lt;p&gt;&lt;span class="msg"&gt;姓名&lt;/span&gt;&lt;/p&gt;&lt;/th&gt;
+
+                        &lt;th&gt;&lt;p&gt;&lt;span class="msg"&gt;转诊状态&lt;/span&gt;&lt;/p&gt;&lt;/th&gt;
+                    &lt;/tr&gt;
+                    &lt;/thead&gt;
+                         &lt;?php
+                         error_reporting(E_ERROR);  
+ini_set("display_errors","Off");  
+                    $user2=$_POST['username'];
+                    $conn = @mysql_connect('localhost', 'root', '');//连接数据库
+                    mysql_select_db('blzt', $conn);//选择哪一个数据库
+                    mysql_query("set names 'utf8'");//设置数据库为utf8编码
+
+                    //判断是否连接数据库是否成功
+                    if (!$conn) {
+                    die('数据库连接失败');
+                    } else {
+                      $result = mysql_query("SELECT zt FROM blzt
+WHERE user='$user2'");
+$row = mysql_fetch_array($result);
+$temp=$row['zt'];
+
+
+                            echo "&lt;tr&gt;
+
+                                 &lt;th&gt;$user2&lt;/th&gt;
+                                 &lt;th&gt;$temp&lt;/th&gt;
+
+                                 &lt;/tr&gt;";
+
+                    }
+                    ?&gt;
+
+
+                    &lt;/table&gt;
+&lt;br&gt;
+
+&lt;br&gt;
+
+&lt;br&gt;
+
+                &lt;font face="verdana"&gt;
+            &lt;table border="1" cellpadding="1" cellspacing="2"&gt;
+
+            &lt;/b&gt;&lt;tr&gt;&lt;/b&gt;
+        &lt;/b&gt;&lt;tr&gt;&lt;/b&gt;
+&lt;/b&gt;&lt;tr&gt;&lt;/b&gt;
+                    &lt;/b&gt;&lt;tr&gt;&lt;/b&gt;
+                &lt;/b&gt;&lt;tr&gt;&lt;/b&gt;
+        &lt;/b&gt;&lt;tr&gt;&lt;/b&gt;
+            &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;姓  名&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                          &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;年龄  /岁&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                          &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;检查周数  /周&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                           &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;是否出现浮肿？&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                            &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;浮肿部位&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                            &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;浮肿注意：                  &lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                            &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;血液检查结果&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                            &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;异常项目&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                            &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;血液注意                  ：&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                            &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;胎   /次&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                            &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;足月产/次&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                            &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;早产  /次&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                            &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;自流  /次&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                            &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;人流引产/次&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                            &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;现有男孩/人&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                            &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;现有女孩/人&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                            &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;医   嘱  ：&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                            &lt;td bgcolor="#E0E0E0"&gt;&lt;b&gt;主要病情&lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+                    &lt;/b&gt;&lt;/td&gt;&lt;/b&gt;
+
+                    &lt;/tr&gt;&lt;/b&gt;
+   &lt;?php 
+                error_reporting(E_ERROR);
+                ini_set("display_errors","Off"); 
+                $user=$_POST['username'];    
+
+                $conn=mysql_connect("localhost","root","");
+                mysql_select_db("casea");
+                mysql_query("set names 'utf8'");
+                $sql = "select userName,userAge,checkweeks,isFuzhong,FZBuwei,yizhu1,blood,exceptionBW,yizhu2,
+                        TaiNumber,SENumber,ZCNumber,ZLNumber,RLNumber,XYNumber,XY2Number,yizhu3,mainProblem from bingli where userName='$user'";
+                $result = mysql_query($sql);
+                $num = mysql_num_rows($result);
+
+                if($num)
+                {  
+                    mysql_data_seek($result, 0);
+                    // 循环取出记录
+
+                    while ($row=mysql_fetch_row($result))
+                    {
+                        echo "&lt;tr&gt;&lt;/b&gt;";
+                        for ($i=0; $i&lt;mysql_num_fields($result); $i++ )
+                        {
+                            echo '&lt;td bgcolor="#F0F0F0"&gt;';
+                            echo $row[$i];
+                            echo '&lt;/td&gt;';
+                        }
+                        echo "&lt;/tr&gt;&lt;/b&gt;";
+                    }
+
+                    echo "&lt;/table&gt;&lt;/b&gt;";
+                    echo "&lt;/font&gt;";
+                    echo  "&lt;/div&gt;";
+
+
+                // 释放资源
+                mysql_free_result($result);
+                // 关闭连接
+                mysql_close($conn);
+        }
+
+        ?&gt;
+
+                    &lt;/table&gt;&lt;/b&gt;
+                   &lt;/font&gt;
+                   &lt;/div&gt;
+        &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>Copyright © 2021 Lydia Shaw all Rights Reserved. <a href="http://www.lydiashaw.asia/research_project/DCL2">Back</a>
+</p>
+</body></html>

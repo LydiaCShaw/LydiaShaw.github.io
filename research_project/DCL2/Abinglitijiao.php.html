@@ -1,0 +1,98 @@
+﻿<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title></title>
+<style id="system" type="text/css">h1,h2,h3,h4,h5,h6,p,blockquote {    margin: 0;    padding: 0;}body {    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;    font-size: 13px;    line-height: 18px;    color: #737373;    margin: 10px 13px 10px 13px;}a {    color: #0069d6;}a:hover {    color: #0050a3;    text-decoration: none;}a img {    border: none;}p {    margin-bottom: 9px;}h1,h2,h3,h4,h5,h6 {    color: #404040;    line-height: 36px;}h1 {    margin-bottom: 18px;    font-size: 30px;}h2 {    font-size: 24px;}h3 {    font-size: 18px;}h4 {    font-size: 16px;}h5 {    font-size: 14px;}h6 {    font-size: 13px;}hr {    margin: 0 0 19px;    border: 0;    border-bottom: 1px solid #ccc;}blockquote {    padding: 13px 13px 21px 15px;    margin-bottom: 18px;    font-family:georgia,serif;    font-style: italic;}blockquote:before {    content:"C";    font-size:40px;    margin-left:-10px;    font-family:georgia,serif;    color:#eee;}blockquote p {    font-size: 14px;    font-weight: 300;    line-height: 18px;    margin-bottom: 0;    font-style: italic;}code, pre {    font-family: Monaco, Andale Mono, Courier New, monospace;}code {    background-color: #fee9cc;    color: rgba(0, 0, 0, 0.75);    padding: 1px 3px;    font-size: 12px;    -webkit-border-radius: 3px;    -moz-border-radius: 3px;    border-radius: 3px;}pre {    display: block;    padding: 14px;    margin: 0 0 18px;    line-height: 16px;    font-size: 11px;    border: 1px solid #d9d9d9;    white-space: pre-wrap;    word-wrap: break-word;}pre code {    background-color: #fff;    color:#737373;    font-size: 11px;    padding: 0;}@media screen and (min-width: 768px) {    body {        width: 748px;        margin:10px auto;    }}</style><style id="custom" type="text/css"></style></head>
+<body marginheight="0"><h1>Abinglitijiao.php</h1>
+<pre><code class="lang-javascript">&lt;?php
+ header("Content-Type:text/html;charset=utf8");// 设定字符集
+ error_reporting(E_ERROR);  
+ini_set("display_errors","Off"); 
+  $conn=mysql_connect("localhost", "root", ""); // 连接数据库
+  mysql_select_db("casea"); // 选择数据库
+  mysql_query("set names 'utf8'");
+
+            if(isset($_POST["submit"]))
+            {
+                $userName = $_POST["userName"];
+                $userAge = $_POST["userAge"];
+                $checkweeks = $_POST["checkweeks"];
+                $isFuzhong = $_POST["isFuzhong"];
+                $FZBuwei="";
+                if($_POST["FZBuwei"]!=null){
+                    for($i=0;$i&lt;count($_POST["FZBuwei"]);$i++)
+                    {
+                        $FZBuwei=$FZBuwei."".$_POST["FZBuwei"][$i].",";
+                    }
+                }
+
+                $yizhu1 = $_POST["yizhu1"];
+                $blood = $_POST["blood"];
+
+                $exceptionBW="";
+                if($_POST["exceptionBW"]!=null){
+                    for($i=0;$i&lt;count($_POST["exceptionBW"]);$i++)
+                    {
+                        $exceptionBW=$exceptionBW."".$_POST["exceptionBW"][$i].",";
+                    }
+                }
+
+
+
+                $yizhu2 = $_POST["yizhu2"];
+                $TaiNumber = $_POST["TaiNumber"];
+                $SENumber = $_POST["SENumber"];
+                $ZCNumber = $_POST["ZCNumber"];
+                $ZLNumber = $_POST["ZLNumber"];
+                $RLNumber = $_POST["RLNumber"];
+                $XYNumber = $_POST["XYNumber"];
+                $XY2Number = $_POST["XY2Number"];
+                $yizhu3 = $_POST["yizhu3"];
+                $mainProblem = $_POST["mainProblem"];
+
+
+
+                $sql = "select username from bingli where username = '$_POST[userName]'"; // SQL语句
+                $result = mysql_query($sql); // 执行SQL语句
+                $num = mysql_num_rows($result); // 统计执行结果影响的行数
+
+                if ($num) // 如果已经存在该用户
+                {
+                     echo "&lt;script&gt;alert('yicunzai'); history.go(-1);&lt;/script&gt;";
+                } else // 不存在当前用户名称
+                {
+                     $sql_insert = "insert into bingli (userName,userAge,checkweeks,isFuzhong,FZBuwei,yizhu1,blood,exceptionBW,yizhu2,
+                            TaiNumber,SENumber,ZCNumber,ZLNumber,RLNumber,XYNumber,XY2Number,yizhu3,mainProblem) 
+                            values('$userName','$userAge','$checkweeks','$isFuzhong','$FZBuwei','$yizhu1','$blood','$exceptionBW','$yizhu2',
+                            '$TaiNumber','$SENumber','$ZCNumber','$ZLNumber','$RLNumber','$XYNumber','$XY2Number','$yizhu3','$mainProblem')";
+
+
+                    $res_insert = mysql_query($sql_insert);
+
+                    if ($res_insert) {
+                        echo "&lt;script&gt;alert('SUCCEED!'); history.go(-1);&lt;/script&gt;";
+                    } else {
+                        echo "&lt;script&gt;alert('PLEASE WAIT！'); history.go(-1);&lt;/script&gt;";
+                    }
+                }
+
+                // 释放资源
+                 mysql_free_result($result);
+                // 关闭连接
+                mysql_close($conn); 
+
+
+
+            } 
+            else
+            {
+                echo "&lt;script&gt;alert('weichenggong！'); history.go(-1);&lt;/script&gt;";
+            }
+
+
+                   mysql_free_result($result);
+                   mysql_close();
+
+        ?&gt;</code></pre>
+<p>Copyright © 2021 Lydia Shaw all Rights Reserved. <a href="http://www.lydiashaw.asia/research_project/DCL2">Back</a>
+</p>
+</body></html>
