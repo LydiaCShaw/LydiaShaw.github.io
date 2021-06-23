@@ -1,0 +1,74 @@
+﻿<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title></title>
+<style id="system" type="text/css">h1,h2,h3,h4,h5,h6,p,blockquote {    margin: 0;    padding: 0;}body {    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;    font-size: 13px;    line-height: 18px;    color: #737373;    margin: 10px 13px 10px 13px;}a {    color: #0069d6;}a:hover {    color: #0050a3;    text-decoration: none;}a img {    border: none;}p {    margin-bottom: 9px;}h1,h2,h3,h4,h5,h6 {    color: #404040;    line-height: 36px;}h1 {    margin-bottom: 18px;    font-size: 30px;}h2 {    font-size: 24px;}h3 {    font-size: 18px;}h4 {    font-size: 16px;}h5 {    font-size: 14px;}h6 {    font-size: 13px;}hr {    margin: 0 0 19px;    border: 0;    border-bottom: 1px solid #ccc;}blockquote {    padding: 13px 13px 21px 15px;    margin-bottom: 18px;    font-family:georgia,serif;    font-style: italic;}blockquote:before {    content:"C";    font-size:40px;    margin-left:-10px;    font-family:georgia,serif;    color:#eee;}blockquote p {    font-size: 14px;    font-weight: 300;    line-height: 18px;    margin-bottom: 0;    font-style: italic;}code, pre {    font-family: Monaco, Andale Mono, Courier New, monospace;}code {    background-color: #fee9cc;    color: rgba(0, 0, 0, 0.75);    padding: 1px 3px;    font-size: 12px;    -webkit-border-radius: 3px;    -moz-border-radius: 3px;    border-radius: 3px;}pre {    display: block;    padding: 14px;    margin: 0 0 18px;    line-height: 16px;    font-size: 11px;    border: 1px solid #d9d9d9;    white-space: pre-wrap;    word-wrap: break-word;}pre code {    background-color: #fff;    color:#737373;    font-size: 11px;    padding: 0;}@media screen and (min-width: 768px) {    body {        width: 748px;        margin:10px auto;    }}</style><style id="custom" type="text/css"></style></head>
+<body marginheight="0"><h1>sum.m</h1>
+<pre><code class="lang-javascript">%%2015届DCL4宫颈癌病理研究  指导教师：李晨
+%%1502班 尚麟静 20155467
+clc;                                                                       %清除命令行
+clear;                                                                     %清除变量状态数据
+close all;                                                                 %关闭所有窗口
+
+%%读取原图
+path='D:\宇宙第一ADC\___学习\MATLAB\dataset';                               %读取路径
+img=dir(strcat(path,'*.jpg'));                                             %获取该文件夹下所有jpg图像
+img_num=length(img);                                                       %获取图像总数量
+for k=1:img_num
+    I=img(k).name;
+    I=imread();
+    figure('name','原图'),imshow(I);
+
+%%亮度调节
+I0=imadjust(I,[.2 .2 0;.8 .8 1],[]);
+figure('name','亮度调节'),imshow(I0)
+
+%%灰度化
+I1=rgb2gray(I0);
+figure('name','灰度化'),imshow(I1);
+
+%%大津阈值二值化
+T=graythresh(I1);                                                          %获取阈值
+I2=im2bw(I1,T);                                                            %二值化
+figure('name','大津阈值分割'),imshow(I2,[]); 
+se1=strel('disk',2');
+
+%%设定结构元素
+se=strel('disk',5');
+se2=strel('disk',13');
+
+I3=imerode(I2,se2);                                                        %图像腐蚀
+I4=imdilate(I2,se);                                                        %图像膨胀
+I5=I2-I4;                                                                  %边缘提取
+I6=imerode(I5,se2);                                                        %图像腐蚀
+I7=I3-I6;
+I8=I5+I7;
+I9=imerode(I7,se2);                                                        %图像腐蚀
+figure('name','形态学处理'),imshow(I9,[])
+
+ske = bwmorph(1-I9,'skel',Inf);                                             %骨架化
+figure('name','骨架化'),imshow(ske)
+
+point= bwmorph(ske,'clean');                                               %寻找分支点
+point= bwmorph(point,'branchpoints');
+[r]=find(point==1);
+num=length(r);                                                             %获取个数
+NUM = ceil(num/2);
+figure('name','分支点'),imshow(point+I9);
+
+II=I2-I9;
+figure,imshow(I2+ske,[]);
+F1=imdilate(I2,se2);  
+P1=imerode(F1,se2);
+figure,imshow(P1)
+[Sq]=find(P1==0);
+
+s=length(Sq);                                                              %获得个数
+[l,w]=size(P1);
+ratio1= s/(l*w);                                                           %平均个数
+ratio2 = s/NUM;
+
+save('C:\Users\linjing Shang\Documents\MATLAB\data2.txt','ratio2');
+end</code></pre>
+<p>Copyright © 2021 Lydia Shaw all Rights Reserved. <a href="http://www.lydiashaw.asia/research_project/DCL2">Back</a>
+</p>
+</body></html>
