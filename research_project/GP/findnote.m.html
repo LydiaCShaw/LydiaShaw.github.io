@@ -1,0 +1,41 @@
+﻿<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title></title>
+<style id="system" type="text/css">h1,h2,h3,h4,h5,h6,p,blockquote {    margin: 0;    padding: 0;}body {    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;    font-size: 13px;    line-height: 18px;    color: #737373;    margin: 10px 13px 10px 13px;}a {    color: #0069d6;}a:hover {    color: #0050a3;    text-decoration: none;}a img {    border: none;}p {    margin-bottom: 9px;}h1,h2,h3,h4,h5,h6 {    color: #404040;    line-height: 36px;}h1 {    margin-bottom: 18px;    font-size: 30px;}h2 {    font-size: 24px;}h3 {    font-size: 18px;}h4 {    font-size: 16px;}h5 {    font-size: 14px;}h6 {    font-size: 13px;}hr {    margin: 0 0 19px;    border: 0;    border-bottom: 1px solid #ccc;}blockquote {    padding: 13px 13px 21px 15px;    margin-bottom: 18px;    font-family:georgia,serif;    font-style: italic;}blockquote:before {    content:"C";    font-size:40px;    margin-left:-10px;    font-family:georgia,serif;    color:#eee;}blockquote p {    font-size: 14px;    font-weight: 300;    line-height: 18px;    margin-bottom: 0;    font-style: italic;}code, pre {    font-family: Monaco, Andale Mono, Courier New, monospace;}code {    background-color: #fee9cc;    color: rgba(0, 0, 0, 0.75);    padding: 1px 3px;    font-size: 12px;    -webkit-border-radius: 3px;    -moz-border-radius: 3px;    border-radius: 3px;}pre {    display: block;    padding: 14px;    margin: 0 0 18px;    line-height: 16px;    font-size: 11px;    border: 1px solid #d9d9d9;    white-space: pre-wrap;    word-wrap: break-word;}pre code {    background-color: #fff;    color:#737373;    font-size: 11px;    padding: 0;}@media screen and (min-width: 768px) {    body {        width: 748px;        margin:10px auto;    }}</style><style id="custom" type="text/css"></style></head>
+<body marginheight="0"><h1>findnote.m</h1>
+<pre><code class="lang-javascript">%% 此段代码为提取原始病理图像区域节点所用代码
+%与gui3.m配合使用，不单独运行
+%尚麟静
+%20155467
+%基于最小生成树的宫颈癌病理图像聚类研究
+%% 
+function [ result ] = findnote( BW1 )
+
+BB=[];
+[a,b]=size(BW1); %测量提取骨架化图片大小
+k=1;
+for j=1:b
+    for i=1:a
+        if BW1(i,j)==1
+            BB(k,1)=i;      %BB 第一列是行的坐标，第二列是列的坐标
+            BB(k,2)=j;
+            k=k+1;
+        end
+    end
+end
+%
+ hold on;
+for i=1:size(BB,1)
+   % aaaa=BW1(BB(i,1)-1,BB(i,2))+BW1(BB(i,1)+1,BB(i,2))+BW1(BB(i,1),BB(i,2)-1)+BW1(BB(i,1),BB(i,2)+1); %4邻域
+    bbbb=BW1(BB(i,1)-1,BB(i,2))+BW1(BB(i,1)+1,BB(i,2))+BW1(BB(i,1),BB(i,2)-1)+BW1(BB(i,1),BB(i,2)+1)+BW1(BB(i,1)-1,BB(i,2)-1)+BW1(BB(i,1)-1,BB(i,2)+1)+BW1(BB(i,1)+1,BB(i,2)-1)+BW1(BB(i,1)+1,BB(i,2)+1); % 8邻域
+      %寻找其点的八邻域或四邻域
+     if  bbbb&gt;=3 %大于等于三认为是分叉点（节点）
+          result(BB(i,1),BB(i,2))=1;
+
+
+      end
+end
+end</code></pre>
+<p>Copyright © 2021 Lydia Shaw all Rights Reserved. <a href="http://www.lydiashaw.asia/research_project/DCL2">Back</a>
+</p>
+</body></html>

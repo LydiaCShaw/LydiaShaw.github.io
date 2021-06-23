@@ -1,0 +1,1242 @@
+﻿<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title></title>
+<style id="system" type="text/css">h1,h2,h3,h4,h5,h6,p,blockquote {    margin: 0;    padding: 0;}body {    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;    font-size: 13px;    line-height: 18px;    color: #737373;    margin: 10px 13px 10px 13px;}a {    color: #0069d6;}a:hover {    color: #0050a3;    text-decoration: none;}a img {    border: none;}p {    margin-bottom: 9px;}h1,h2,h3,h4,h5,h6 {    color: #404040;    line-height: 36px;}h1 {    margin-bottom: 18px;    font-size: 30px;}h2 {    font-size: 24px;}h3 {    font-size: 18px;}h4 {    font-size: 16px;}h5 {    font-size: 14px;}h6 {    font-size: 13px;}hr {    margin: 0 0 19px;    border: 0;    border-bottom: 1px solid #ccc;}blockquote {    padding: 13px 13px 21px 15px;    margin-bottom: 18px;    font-family:georgia,serif;    font-style: italic;}blockquote:before {    content:"C";    font-size:40px;    margin-left:-10px;    font-family:georgia,serif;    color:#eee;}blockquote p {    font-size: 14px;    font-weight: 300;    line-height: 18px;    margin-bottom: 0;    font-style: italic;}code, pre {    font-family: Monaco, Andale Mono, Courier New, monospace;}code {    background-color: #fee9cc;    color: rgba(0, 0, 0, 0.75);    padding: 1px 3px;    font-size: 12px;    -webkit-border-radius: 3px;    -moz-border-radius: 3px;    border-radius: 3px;}pre {    display: block;    padding: 14px;    margin: 0 0 18px;    line-height: 16px;    font-size: 11px;    border: 1px solid #d9d9d9;    white-space: pre-wrap;    word-wrap: break-word;}pre code {    background-color: #fff;    color:#737373;    font-size: 11px;    padding: 0;}@media screen and (min-width: 768px) {    body {        width: 748px;        margin:10px auto;    }}</style><style id="custom" type="text/css"></style></head>
+<body marginheight="0"><h1>MST.m</h1>
+<pre><code class="lang-javascript">%% 此段代码为骨架化、节点构建、最小生成树生成以及病理图像标注所用代码
+%鼠标操作需左键点击多个细胞核中心，然后回车进行下一步操作
+%鼠标操作请以左至右的顺序逐一点取细胞核以免运行错误
+%运行前请修改相关存储图片数据路径，并可替换其余图片进行操作
+%尚麟静 
+%20155467 
+%基于最小生成树的宫颈癌病理图像聚类研究
+%% 
+clc
+clear
+close all
+
+I=imread('D:\宇宙第一ADC\____学习\毕业设计\新建文件夹\新建文件夹\he106-5.png');
+%读取图片
+
+ Fina_Seg=imread('D:\宇宙第一ADC\____学习\毕业设计\新建文件夹\新建文件夹\106-5.png');
+%读取图片
+
+I1=rgb2gray(I);
+%灰度化
+
+Fina_Seg=im2bw(Fina_Seg);
+%二值化
+[~,f]=size(Fina_Seg);
+
+
+figure;
+imshow(Fina_Seg);
+%%此处为一次连线分割区域的尝试
+% hold on;
+ %[xp1,yp1,button2]=ginput(1);
+  %plot(xp1,yp1,'*');
+ %[xp2,yp2,button3]=ginput(1);
+ %plot(xp2,yp2,'*');
+ %line([xp1 xp2],[yp1 yp2]);
+
+
+%imshow(Fina_seg2);
+%save('D:\Desktop\106-62.png');
+ %% 筛选大面积区域 4连通
+
+[K,num]=bwlabel(Fina_Seg,4);  %所有区域细胞骨架
+[L,num]=bwlabel(Fina_Seg,4);  %低密度区域
+[M,num]=bwlabel(Fina_Seg,4);  %中密度区域
+[N,num]=bwlabel(Fina_Seg,4);  %高密度区域
+% num返回的就是Fina_seg中连通区域的个数 KLMN是矩阵
+
+stats=regionprops(K,'all');
+%显示区域总数
+%% 筛选不同密度区域
+for i=1:num %这里的num表示初步通过bwlabel，筛选出来的细胞个数
+    % [r,c]=find(L==i);%二值图L_BW中已经按照顺序标记了分割结果，相同的分割区域数值均为对应的label数字。r、c分别记录对应的原图内的位置
+    S(i)=stats(i).Area;%区域，记录了区域内像素点的个数
+    % L(i)=stats(i).Perimeter;%区域的周长
+    % C(i)=(L(i)*L(i)) /(4*pi*S(i));%近似计算平均密度类的形式
+    %   if 600&lt;stats(i).Area &amp;&amp; stats(i).Area&lt;5000  %  加上面积，一些连接在一起的细胞就会圈不出来。
+    if 500&lt;S(i) %这里为一些筛选条件。筛除极小细胞和连载一起的大团块的干扰。
+        %   if 100&lt;L(i)&amp;&amp; L(i)&lt;300
+        %   if 0.8&lt;C(i)&amp;&amp; C(i)&lt;1.8
+        % if   C(i)&gt;1.5
+        idx=find(L==i); % 元素替换
+        L(idx)=0; % 变为0
+    end
+    if S(i)&gt;1700|| S(i)&lt;500
+        idx=find(M==i); % 元素替换
+        M(idx)=0; % 变为0
+    end
+    if S(i)&lt;1700
+        idx=find(N==i); % 元素替换
+        N(idx)=0;
+    end
+end
+
+%% 骨架化
+% function BW1=skeleton(L)
+% BW = bwmorph(L,'skel',Inf);
+% BW = bwmorph(BW,'thin',Inf);
+% [c,d]=size(BW);
+% BW1=zeros(c+2,d+2);
+% BW1(2:c+1,2:d+1)=BW;
+% %result=zeros(c+2,d+2);
+% end
+
+
+BW = bwmorph(L,'skel',Inf); %骨架提取但保持图像中物体不发生断裂
+BW = bwmorph(BW,'thin',Inf); %进行细化操作
+[c,d]=size(BW);
+BW1=zeros(c+2,d+2);%新建一个零矩阵
+BW1(2:c+1,2:d+1)=BW; %赋值 将骨架数值转移给BW1
+%result=zeros(c+2,d+2);
+
+BW = bwmorph(M,'skel',Inf); %骨架提取但保持图像中物体不发生断裂
+BW = bwmorph(BW,'thin',Inf);%进行细化操作
+[c,d]=size(BW);
+BW2=zeros(c+2,d+2);
+BW2(2:c+1,2:d+1)=BW;%赋值 将骨架数值转移给BW2
+%result=zeros(c+2,d+2);
+
+BW = bwmorph(N,'skel',Inf);%骨架提取但保持图像中物体不发生断裂
+BW = bwmorph(BW,'thin',Inf);%进行细化操作
+[c,d]=size(BW);
+BW3=zeros(c+2,d+2);
+BW3(2:c+1,2:d+1)=BW;%赋值 将骨架数值转移给BW3
+
+result=zeros(c+2,d+2);
+BW = bwmorph(K,'skel',Inf);%骨架提取但保持图像中物体不发生断裂
+figure;
+imshow(I);
+ %line([xp1 xp2],[yp1 yp2]);
+
+
+
+%%  低密度区域数值计算
+[ result1 ] = findnote( BW1 );      %引进节点
+
+[O,num1]=bwlabel(result1,8);  %标签，这些标签的值为1、2、num
+
+Area_I1 = regionprops(O,'centroid');%用来度量图像区域属性的函数.常用来统计
+
+for x = 1: numel(Area_I1)
+
+  %  plot(Area_I1(x).Centroid(1),Area_I1(x).Centroid(2),'r*');
+  % 此处功能为寻找细胞中心点
+   %此处结果以%标记以免最终结果图像杂乱，如需中间过程结果可以将%去掉以查看效果
+
+end
+
+[height,width]=size(BW1);
+xx=[];
+yy=[];%新建矩阵
+
+
+t=1;
+j=1;
+s=1;
+for n=1:num
+    for k=1:num1
+        if L(round(Area_I1(k).Centroid(2)),round(Area_I1(k).Centroid(1)))==n
+
+            yy(j)=round(Area_I1(k).Centroid(1));  %fix 取整，靠近整数
+            xx(j)=round(Area_I1(k).Centroid(2));
+            yyl(s,j)=round(Area_I1(k).Centroid(1));  %fix 取整，靠近整数
+            xxl(s,j)=round(Area_I1(k).Centroid(2));
+            j=j+1;
+        end
+    end
+
+
+    if sum(xx~=0,2)&lt;3           %排除两个点的干扰
+         yyl(s,:)=[];         
+         xxl(s,:)=[];
+    end
+
+    s=s+1;
+    if sum(xx~=0,2)&gt;=3         %sum(xx~=0,2) 统计每一行非0个数   sum(xx~=0,1) sum(xx~=0)代表列
+        %trh=delaunay(yy,xx);
+
+        a=[];
+
+        for i=1:numel(xx)
+            x1=xx(i);%在连通区域内找到第一个点的坐标
+            y1=yy(i);
+            for j=1:numel(xx)%找到第二个距离最近的点
+                x2=xx(j);
+                y2=yy(j);
+                Dist=sqrt((x2-x1)^2+(y2-y1)^2);%勾股定理 计算距离
+                a(i,j)=Dist;
+            end
+        end
+
+    end
+    xx=[]; %为了防止点干扰
+    yy=[];
+    j=1;
+end
+ xxl(any(xxl,2)==0,:)=[];
+ yyl(any(yyl,2)==0,:)=[];
+
+%% 中密度区域数值计算和最小生成树构建
+[ result2 ] = findnote( BW2 );
+
+[O,num2]=bwlabel(result2,8);  %标签，这些标签的值为1、2、num
+
+Area_I2 = regionprops(O,'centroid');%用来度量图像区域属性的函数.常用来统计
+
+for x = 1: numel(Area_I2)
+
+   % plot(Area_I2(x).Centroid(1),Area_I2(x).Centroid(2),'r*');
+    %此处结果以%标记以免最终结果图像杂乱，如需中间过程结果可以将%去掉以查看效果
+
+end
+%  坐标点
+[height,width]=size(BW2);
+xx=[];
+yy=[]; %新建矩阵
+
+ccm=[];
+arem=[];
+
+t=1;
+j=1;
+s=1;
+
+for n=1:num
+    for k=1:num2
+        if M(round(Area_I2(k).Centroid(2)),round(Area_I2(k).Centroid(1)))==n
+
+            yy(j)=round(Area_I2(k).Centroid(1));  %fix 取整，靠近整数
+            xx(j)=round(Area_I2(k).Centroid(2));
+            yym(s,j)=round(Area_I2(k).Centroid(1));  %fix 取整，靠近整数
+            xxm(s,j)=round(Area_I2(k).Centroid(2));
+            j=j+1;
+        end
+    end
+
+
+    if sum(xx~=0,2)&lt;3           %排除两个点的干扰
+         yym(s,:)=[];         
+         xxm(s,:)=[];
+    end
+
+
+    s=s+1;
+    if sum(xx~=0,2)&gt;=3         %sum(xx~=0,2) 统计每一行非0个数   sum(xx~=0,1) sum(xx~=0)代表列
+        %trh=delaunay(yy,xx);
+
+        cc=stats(n).Perimeter;      %提取周长用于聚类
+          ccm=[ccm;cc];
+
+        are= stats(n).Area  ;     %提取面积用于聚类
+         arem=[arem;are];
+
+%         rh=I(:,:,1); %RGB颜色特征提取
+%         gh=I(:,:,2);
+%         bh=I(:,:,3);
+%          idx=find(M~=n); % 元素替换
+% %         M(idx)=0; % 变为0
+%         
+%          rh(idx)=0; % 变为0
+%          gh(idx)=0; 
+%          bh(idx)=0;
+%          figm=cat(3,rh,gh,bh);
+%          figure;
+%          imshow(figm);
+% %          
+        a=[];
+
+        for i=1:numel(xx)
+            x1=xx(i);%在连通区域内找到第一个点的坐标
+            y1=yy(i);
+            for j=1:numel(xx)%找到第二个距离最近的点在第一个点之后
+                x2=xx(j);
+                y2=yy(j);
+                Dist=sqrt((x2-x1)^2+(y2-y1)^2);%勾股定理 计算距离
+                a(i,j)=Dist;
+            end
+        end
+
+        a=a+a';     %
+        a(a==0)=inf;
+        result2=[];
+        p=1;
+        tb=2:length(a);  
+        while size(result2,2)~=length(a)-1
+            temp=a(p,tb);
+            temp=temp(:); % 把所有的元素都拿出来，从左到右一列一列的拿，变为一列。
+            d=min(temp);
+            [jb,kb]=find(a(p,tb)==d); %[a1,a2] = find(a)，找出a中非零元素所在的行和列，并分别存储在a1和a2中
+            j=p(jb(1));
+            k=tb(kb(1));
+            result2=[result2,[j;k;d]];
+            p=[p,k];
+            tb(tb==k)=[];
+        end
+
+        % 统计特征
+
+        for i=1:size(result2,2)
+            datam(t,i)=result2(3,i);
+            datam_1(t,i)=result2(1,i);
+            datam_2(t,i)=result2(2,i);
+        end
+        t=t+1;
+
+
+        for i=1:numel(xx)-1  %画出树内的边 最小生成树可视化构建
+
+            plot(yy(1,result2(1:2,i)),xx(1,result2(1:2,i)),'k')
+
+        end
+
+
+    end
+    xx=[]; %为了防止点干扰
+    yy=[];
+    j=1;
+
+end
+ xxm(any(xxm,2)==0,:)=[];
+ yym(any(yym,2)==0,:)=[];
+
+%% 高密度区域数值计算和最小生成树构建
+[ result3 ] = findnote( BW3 );
+
+[O,num3]=bwlabel(result3,8);  %标签，这些标签的值为1、2、num
+
+Area_I3 = regionprops(O,'centroid');%用来度量图像区域属性的函数.常用来统计
+
+for x = 1: numel(Area_I3)
+
+   % plot(Area_I3(x).Centroid(1),Area_I3(x).Centroid(2),'r*');
+   %此处结果以%标记以免最终结果图像杂乱，如需中间过程结果可以将%去掉以查看效果
+
+end
+
+
+
+%  坐标点
+[height,width]=size(BW3);
+xx=[];
+yy=[];%新建矩阵
+
+areh=[];
+cch=[];
+t=1;
+j=1;
+s=1;
+for n=1:num
+    for k=1:num3
+
+        if N(round(Area_I3(k).Centroid(2)),round(Area_I3(k).Centroid(1)))==n
+
+            yy(j)=round(Area_I3(k).Centroid(1));  %fix 取整，靠近整数
+            xx(j)=round(Area_I3(k).Centroid(2));
+            yyh(s,j)=round(Area_I3(k).Centroid(1));  %fix 取整，靠近整数
+            xxh(s,j)=round(Area_I3(k).Centroid(2));
+            j=j+1;
+        end
+
+    end
+    s=s+1;
+
+
+    if sum(xx~=0,2)&gt;=3
+        %trh=delaunay(yy,xx);
+
+        cc=stats(n).Perimeter;      %提取周长用于聚类
+          cch=[cch;cc];
+
+        are= stats(n).Area  ;     %提取面积用于聚类
+         areh=[areh;are];
+
+%         rh=I(:,:,1);   %RGB颜色特征提取 如有需要可将%去掉
+%         gh=I(:,:,2);
+%         bh=I(:,:,3);
+%          idx=find(N~=n); % 元素替换
+% %         M(idx)=0; % 变为0
+%         
+%          rh(idx)=0; % 变为0
+%          gh(idx)=0; 
+%          bh(idx)=0;
+%          figh=cat(3,rh,gh,bh);
+%          figure;
+%          imshow(figh);
+% %          
+
+        a=[];
+
+        for i=1:numel(xx)
+            x1=xx(i);%在连通区域内找到第一个点的坐标
+            y1=yy(i);
+            for j=1:numel(xx)%找到第二个距离最近的点在第一个点之后
+                x2=xx(j);
+                y2=yy(j);
+                Dist=sqrt((x2-x1)^2+(y2-y1)^2);%勾股定理 计算距离
+                a(i,j)=Dist;
+            end
+        end
+
+        a=a+a';     % 
+        a(a==0)=inf;
+        result3=[];
+        p=1;
+        tb=2:length(a);  
+        while size(result3,2)~=length(a)-1
+            temp=a(p,tb);
+            temp=temp(:); % 把所有的元素都拿出来，从左到右一列一列的拿，变为一列。
+            d=min(temp);
+            [jb,kb]=find(a(p,tb)==d);
+            j=p(jb(1));
+            k=tb(kb(1));
+            result3=[result3,[j;k;d]];
+            p=[p,k];
+            tb(tb==k)=[];
+        end
+
+        % 统计特征         %datah 距离矩阵
+
+        for i=1:size(result3,2)
+            datah(t,i)=result3(3,i);
+            datah_1(t,i)=result3(1,i);
+            datah_2(t,i)=result3(2,i);
+        end
+        t=t+1;
+
+
+        for i=1:numel(xx)-1  %画出树内的边
+
+            plot(yy(1,result3(1:2,i)),xx(1,result3(1:2,i)),'b');
+        end
+
+
+    end
+    xx=[]; %为了防止点干扰
+    yy=[];
+    j=1;
+
+end
+
+ xxh(any(xxh,2)==0,:)=[];
+ yyh(any(yyh,2)==0,:)=[];% 删除全0的行
+
+ Reg_point_h=sum(xxh~=0,2);
+ Reg_point_m=sum(xxm~=0,2);
+
+%% 特征值计算
+%% 此处部分显示结果均以%标记，为使结果清晰可见，只显示最终结果。如有需要可以将%去掉以查看计算结果
+
+%% 长度均值计算-------------------------------------------------------
+A=sum(datah~=0,2);
+
+for i=1:size(datah)           % size() 返回行 
+    meandis_b_h(i,1)=sum(datah(i,:))/A(i);
+
+end
+
+% figure;
+% bar(meandis_b_h,1); 
+% %normplot(meandis_h); 
+%    xlabel('长度均值高密度')
+    for i=1:size(datah)           % size() 返回行   两种方法
+         a=datah(i,:);
+        a(find(a==0))=[];
+    meandis_cc(i,1)=mean(a);
+
+end
+
+
+B=sum(datam~=0,2);
+for i=1:size(datam)           % size() 返回行 
+    meandis_b_m(i,1)=sum(datam(i,:))/B(i);
+
+end
+% figure;
+% bar(meandis_b_m,1); 
+% % probplot(meandis_m);
+%    xlabel('长度均值中密度')
+
+
+%% 长度方差计算---------------------------------------------------------
+
+for i=1:size(datah)           % size() 返回行 
+    summ=0;
+    for j=1:A(i)
+    sumvarian_b_h(i,1)=(datah(i,j)-meandis_b_h(i,1))^2;
+    summ=summ+sumvarian_b_h(i,1);
+    end
+    varian_b_h(i,1)=summ/(A(i)-1);
+end
+% figure;
+% bar(varian_b_h,1); 
+%    xlabel('长度方差高密度')
+
+for i=1:size(datam)           % size() 返回行 
+    summ=0;
+    for j=1:B(i)
+    sumvarian_m=(datam(i,j)-meandis_b_m(i,1))^2;
+    summ=summ+sumvarian_m;
+    end
+    varian_b_m(i,1)=summ/(B(i)-1); % n-1是无偏估计
+end
+% figure;
+% bar(varian_b_m,1); 
+%    xlabel('长度方差中密度')
+
+
+%% 长度偏度计算---------------------------------------------------------
+
+
+for i=1:size(datah)           % size() 返回行 
+    a=datah(i,:);
+    a(find(a==0))=[];
+    skewness_b_h(i,1)=skewness(a);           %偏度
+
+end
+
+% figure;
+% bar(skewness_b_h,1); 
+%    xlabel('长度偏度高密度')
+
+    skewness_cc=skewness(datah');%偏度
+% figure;
+%  bar(skewness_cc,1); 
+%     xlabel('对比')
+
+    for i=1:size(datam)           % size() 返回行 
+    a=datam(i,:);
+    a(find(a==0))=[];
+    skewness_b_m(i,1)=skewness(a);           %偏度
+
+end
+
+% figure;
+% bar(skewness_b_m,1); 
+%    xlabel('长度偏度中密度')
+
+
+
+
+%% 长度峰度计算--------------------------------------------------------------
+
+% kurtosis_h=kurtosis(datah');%峰度
+
+for i=1:size(datah)           % size() 返回行 
+    a=datah(i,:);
+    a(find(a==0))=[];
+    kurtosis_b_h(i,1)=kurtosis(a);          
+
+end
+
+% figure;
+% bar(kurtosis_b_h,1); 
+%    xlabel('长度峰度高密度')
+
+for i=1:size(datam)           % size() 返回行 
+    a=datam(i,:);
+    a(find(a==0))=[];
+    kurtosis_b_m(i,1)=kurtosis(a);         
+
+end
+% 
+% figure;
+% bar(kurtosis_b_m,1); 
+%    xlabel('长度峰度中密度')
+
+%个数--------------------------------------------------------------
+
+%高密
+ mean_p_h=mean(Reg_point_h);
+ varian_p_h=var(Reg_point_h);
+ skewness_p_h=skewness(Reg_point_h);
+ kurtosis_p_h=kurtosis(Reg_point_h); 
+%中密
+ mean_p_m=mean(Reg_point_m);
+ varian_p_m=var(Reg_point_m);
+ skewness_p_m=skewness(Reg_point_m);
+ kurtosis_p_m=kurtosis(Reg_point_m); 
+
+
+
+%%  角度-------------------------------------------------------------------
+% a=[-2,0];  a,b为向量
+% b=[1,-1];
+% al = acos(dot(a,b)/(norm(a)*norm(b))); 核心步骤
+% ans=180-al/pi*180
+%方法一
+
+%高密度
+  for i=1:size(datah,1)
+      for j=1:A(i,1)-1
+      a=[xxh(i,datah_1(i,j))-xxh(i,datah_2(i,j)),yyh(i,datah_1(i,j))-yyh(i,datah_2(i,j))]; 
+      %a=abs(a);
+      b=[xxh(i,datah_1(i,j+1))-xxh(i,datah_2(i,j+1)),yyh(i,datah_1(i,j+1))-yyh(i,datah_2(i,j+1))];
+     % b=abs(b);
+       al = acos(dot(a,b)/(norm(a)*norm(b)));
+       ans=round(al/pi*180);
+       if datah_2(i,j)==datah_1(i,j+1)
+      angle_h(i,j)=180-ans;  
+       else 
+      angle_h(i,j)=ans;   
+       end
+  end
+  end
+
+%中密度
+  for i=1:size(datam,1)
+      for j=1:B(i,1)-1
+      a=[xxm(i,datam_1(i,j))-xxm(i,datam_2(i,j)),yym(i,datam_1(i,j))-yym(i,datam_2(i,j))]; 
+      %a=abs(a);
+      b=[xxm(i,datam_1(i,j+1))-xxm(i,datam_2(i,j+1)),yym(i,datam_1(i,j+1))-yym(i,datam_2(i,j+1))];
+     % b=abs(b);
+       al = acos(dot(a,b)/(norm(a)*norm(b)));
+       ans=round(al/pi*180);
+       if datam_2(i,j)==datam_1(i,j+1)
+      angle_m(i,j)=180-ans;  
+       else 
+      angle_m(i,j)=ans;   
+       end
+  end
+  end
+
+%% 角度均值计算---------------------------------------------------------
+  A=sum(angle_h~=0,2);
+  %
+  for i=1:size(angle_h)           % size() 返回行 
+    meandis_g_h(i,1)=sum(angle_h(i,:))/A(i);
+
+end
+
+% figure;
+% bar(meandis_g_h,1); 
+% %normplot(meandis_h); 
+%    xlabel('角度均值高密度')
+
+%     for i=1:size(datah)           % size() 返回行   %此为第二种方法
+%          a=datah(i,:);
+%         a(find(a==0))=[];
+%     meandis_cc(i,1)=mean(a);
+%     
+% end
+
+
+B=sum(angle_m~=0,2);
+for i=1:size(datam)           % size() 返回行 
+    meandis_g_m(i,1)=sum(angle_m(i,:))/B(i);
+
+end
+% figure;
+% bar(meandis_g_m,1); 
+% % probplot(meandis_m);
+%    xlabel('角度均值中密度')
+%   
+
+
+
+ %% 角度方差计算---------------------------------------------------------
+for i=1:size(angle_h)           % size() 返回行 
+    summ=0;
+    for j=1:A(i)
+    sumvarian_g_h(i,1)=(angle_h(i,j)-meandis_g_h(i,1))^2;
+    summ=summ+sumvarian_g_h(i,1);
+    end
+    varian_g_h(i,1)=summ/(A(i)-1);
+end
+% figure;
+% bar(varian_g_h,1); 
+%    xlabel('角度方差高密度')
+
+for i=1:size(angle_m)           % size() 返回行 
+    summ=0;
+    for j=1:B(i)
+    sumvarian_m=(angle_m(i,j)-meandis_g_m(i,1))^2;
+    summ=summ+sumvarian_m;
+    end
+    varian_g_m(i,1)=summ/(B(i)-1); % n-1是无偏估计
+end
+% figure;
+% bar(varian_g_m,1); 
+%    xlabel('角度方差中密度')
+
+
+for i=1:size(angle_h)           % size() 返回行 
+    a=angle_h(i,:);
+    a(find(a==0))=[];
+    skewness_g_h(i,1)=skewness(a);           %偏度
+
+end
+
+% figure;
+% bar(skewness_g_h,1); 
+%    xlabel('角度偏度高密度')
+
+    skewness_cc=skewness(datah');%偏度
+% figure;
+%  bar(skewness_cc,1); 
+%     xlabel('对比')
+
+    for i=1:size(angle_m)           % size() 返回行 
+    a=angle_m(i,:);
+    a(find(a==0))=[];
+    skewness_g_m(i,1)=skewness(a);           %偏度
+
+end
+% 
+% figure;
+% bar(skewness_g_m,1); 
+%    xlabel('角度偏度中密度')
+
+
+
+
+%% 角度峰度计算--------------------------------------------------------------
+
+% kurtosis_h=kurtosis(datah');%峰度
+
+for i=1:size(angle_h)           % size() 返回行 
+    a=angle_h(i,:);
+    a(find(a==0))=[];
+    kurtosis_g_h(i,1)=kurtosis(a);          
+
+end
+
+% figure;
+% bar(kurtosis_g_h,1); 
+%    xlabel('角度峰度高密度')
+
+for i=1:size(angle_m)           % size() 返回行 
+    a=angle_m(i,:);
+    a(find(a==0))=[];
+    kurtosis_g_m(i,1)=kurtosis(a);         
+
+end
+
+% figure;
+% bar(kurtosis_g_m,1); 
+%    xlabel('角度峰度中密度')
+%方法二
+% a2 = (x1-x2)*(x1-x2)+(y1-y2)*(y1-y2);
+% b2 = (x3-x2)*(x3-x2)+(y3-y2)*(y3-y2);
+% c2 = (x1-x3)*(x1-x3)+(y1-y3)*(y1-y3);
+% a = sqrt(a2);
+% b = sqrt(b2);
+% c = sqrt(c2);
+% pos = (a2+b2-c2)/(2*a*b);    %//求出余弦值
+% angle = acos(pos);         %//余弦值装换为弧度值
+% realangle = angle*180/pi;   %//弧度值转换为角度值
+
+
+%% 近似拟合---------------------------------------------------------------
+% 
+% for i=1:size(datah,1)         %旋转求新坐标
+%      for j=2:A(i,1)
+%          dist=(xxh(i,j)-xxh(i,1))^2+(yyh(i,j)-yyh(i,1))^2;
+%          dist=sqrt(dist);
+%          a=[xxh(i,A(i,1)+1)-xxh(i,1),yyh(i,A(i,1)+1)-yyh(i,1)];  
+%          b=[xxh(i,j)-xxh(i,1),yyh(i,j)-yyh(i,1)]; 
+%         al = acos(dot(a,b)/(norm(a)*norm(b))); %弧度
+%         ans=al/pi*180;
+%         
+%         t=al;             % cos弧度制 弧度 = 角度*pi/180    角度 = 弧度*180/pi
+%         
+%         x=dist*cos(t);
+%         y=dist*sin(t);
+%         newpoint_hx(i,j)=x;
+%         newpoint_hy(i,j)=y;
+%      end
+%       newpoint_hx(i,1)=0;
+%       newpoint_hy(i,1)=0;
+%       dist1=(xxh(i,A(i,1)+1)-xxh(i,1))^2+(yyh(i,A(i,1)+1)-yyh(i,1))^2;
+%       dist1=sqrt(dist1);
+%       newpoint_hx(i,A(i,1)+1)=dist1;
+%       newpoint_hy(i,A(i,1)+1)=0; 
+% end
+% 
+%     
+% for i=1:size(datah,1)          %排除0点干扰
+%     for j=1:A(i,1)+1
+%     x(j)=newpoint_hx(i,j);
+%     y(j)=newpoint_hx(i,j);
+%     end
+%     match=polyfit(x,y,3);
+%     match_h(i,:)= roundn(match,-50);
+%     x=[];
+%     y=[];
+%    %  match_h(i,:)= match;
+% end
+
+
+%%  函数命令拟合：
+% 这里函数polyfit第一个参数传递的是拟合数据的自变量，第二个参数是因变量，第三个参数是拟合多项式的阶数，
+% 可以给定不同的N，运用不同的多项式进行拟合
+% 
+% y1=polyfit(x,y,3)，回车  N=3 即 y=a*x^3+b*x^2+c*x+d
+% y1 =
+%     4.0000    3.0000    0.0000    2.0000
+% y=4*x^3+3*x^2+2 
+
+
+
+
+%   save('E:\matlab\data\mid.mat','varian_b_m');
+%   save('E:\matlab\data\high.mat','varian_b_h');
+%%
+% clus=3;
+% [idx_h,c]=kmeans(varian_b_h,clus);
+% 
+% 
+% for i=1:size(xxh,1)
+%    x=xxh(i,1);
+%    y=yyh(i,1);
+%    a=K(x,y);
+%   [x,y] = find(K==a);
+%  
+%  R=ones(size(K));
+%  G=zeros(size(K));
+%  B=zeros(size(K));
+%  F(:,:,1)=R;
+%  F(:,:,2)=G;
+%  F(:,:,3)=B;
+% 
+%  F(x,y,2)=ones(size(x,1));
+%  imshow(F)
+% 
+% end
+
+%% 高密度区域标注
+clus=2;
+
+sta_h=[varian_b_h,areh,cch];
+sta_h2=[areh,cch];
+[idx_h,c]=kmeans(sta_h,clus); %第一次聚类
+[idx_h2,c]=kmeans(sta_h2,clus); %第二次聚类
+% figure;
+% imshow(I);
+%背景染色
+
+%   [x,y] = find(L==0);
+%   k = boundary(x,y);
+%   patch(y(k),x(k),'w','facealpha',0.3,'edgecolor','none');
+
+for i=1:size(xxh,1)
+    if idx_h(i,1)==1
+   x=xxh(i,1);
+   y=yyh(i,1);
+   a=K(x,y);
+  [x,y] = find(K==a);
+
+  k = boundary(x,y);
+
+%           rh=I(:,:,1);
+%         gh=I(:,:,2);
+%         bh=I(:,:,3);
+%          idx=find(K~=a); % 元素替换
+% %         M(idx)=0; % 变为0
+%         
+%          rh(idx)=0; % 变为0
+%          gh(idx)=0; 
+%          bh(idx)=0;
+%          figm=cat(3,rh,gh,bh);
+%          figure;
+%          imshow(figm);
+
+  patch(y(k),x(k),'r','facealpha',0.2,'edgecolor','none');
+   hold on     % 轮廓 
+  plot(y(k),x(k),'r')  ;
+
+
+%%用于k=3时聚类三种不同深浅标注
+%     elseif idx_h(i,1)==2
+%    x=xxh(i,1);
+%    y=yyh(i,1);
+%    a=K(x,y);
+%   [x,y] = find(K==a);
+%   k = boundary(x,y);
+%   patch(y(k),x(k),'r','facealpha',0.3,'edgecolor','none');
+%         
+    else 
+   x=xxh(i,1);
+   y=yyh(i,1);
+   a=K(x,y);
+  [x,y] = find(K==a);
+  k = boundary(x,y);
+
+  patch(y(k),x(k),'r','facealpha',0.5,'edgecolor','none');
+         hold on     % 轮廓 
+  plot(y(k),x(k),'r')  ;
+    end
+end
+
+%% 中密度区域标注
+
+clus=2;
+sta_m=[varian_b_m,arem,ccm];
+sta_m2=[arem,ccm];
+[idx_m,c]=kmeans(sta_m,clus); %第一次聚类
+[idx_m2,c]=kmeans(sta_m2,clus);%第二次聚类
+
+for i=1:size(xxm,1)
+    if idx_m(i,1)==1
+   x=xxm(i,1);
+   y=yym(i,1);
+   a=K(x,y);
+  [x,y] = find(K==a);
+  k = boundary(x,y);
+  patch(y(k),x(k),'b','facealpha',0.2,'edgecolor','none');
+   hold on     % 轮廓 
+  plot(y(k),x(k),'b')  ;
+%     elseif idx_m(i,1)==2
+%    x=xxm(i,1);
+%    y=yym(i,1);
+%    a=K(x,y);
+%   [x,y] = find(K==a);
+%   k = boundary(x,y);
+%   patch(y(k),x(k),'r','facealpha',0.3,'edgecolor','none');
+%         
+    else 
+   x=xxm(i,1);
+   y=yym(i,1);
+   a=K(x,y);
+  [x,y] = find(K==a);
+ %%此处用于单独显示被标注区域结果
+%             rh=I(:,:,1);
+%         gh=I(:,:,2);
+%         bh=I(:,:,3);
+%          idx=find(K~=a); % 元素替换
+% %         M(idx)=0; % 变为0
+%         
+%          rh(idx)=0; % 变为0
+%          gh(idx)=0; 
+%          bh(idx)=0;
+%          figm=cat(3,rh,gh,bh);
+%          figure;
+%          imshow(figm);
+%   
+%   
+
+
+
+
+
+  k = boundary(x,y);
+  patch(y(k),x(k),'b','facealpha',0.5,'edgecolor','none');
+         hold on     % 轮廓 
+  plot(y(k),x(k),'b')  ;
+    end
+end
+
+%% 低密度区域标注
+
+
+%imshow(I);
+for i=1:size(xxl,1)
+   x=xxl(i,1);
+   y=yyl(i,1);
+   a=K(x,y);
+  [x,y] = find(K==a);
+  k = boundary(x,y);
+  patch(y(k),x(k),'g','facealpha',0.3,'edgecolor','none');
+
+end
+
+% silhouette(varian_b_h,idx_h);
+% silhouette(varian_b_m,idx_m);
+
+%% 手动操作 回车继续下一步操作
+hold on;
+ [xp1,yp1,button1]=ginput;
+  plot(xp1,yp1,'+');
+ % coord = [x1;y1];
+ % w = dist(coord); % 距离
+%id = (w&lt;50);
+line(xp1,yp1);
+%gplot(id,coord','y'); % 绘线
+  d=boundary(xp1,yp1);
+ patch(xp1(d),yp1(d),'y','facealpha',0.3,'edgecolor','none');
+%line(x1(d),y1(d));
+
+figure;
+f=[sta_h;sta_m(:,:)];
+g=[idx_h;idx_m(:,:)+2];
+
+ save('D:\Desktop\f4.mat','f');
+ save('D:\Desktop\g4.mat','g');
+silhouette(f,g);
+
+%% 提取特征
+[ result4 ] = findnote2( xp1,yp1 );
+
+[O,num4]=bwlabel(result4,8);  %标签，这些标签的值为1、2、num
+Area_I4 = regionprops(O,'centroid');%用来度量图像区域属性的函数.常用来统计
+
+
+%[height,width]=size(BW1);
+xx=[];
+yy=[];
+ %新建矩阵
+
+t=1;
+j=1;
+s=1;
+aren=[];
+ccn=[];
+%for n=1:num
+    for k=1:num4
+        if L(round(Area_I4(k).Centroid(2)),round(Area_I4(k).Centroid(1)))==n
+
+            yy(j)=round(Area_I4(k).Centroid(1));  %fix 取整，靠近整数
+            xx(j)=round(Area_I4(k).Centroid(2));
+            yyn(s,j)=round(Area_I4(k).Centroid(1));  %fix 取整，靠近整数
+            xxn(s,j)=round(Area_I4(k).Centroid(2));
+            j=j+1;
+        end
+    end
+
+
+    if sum(xx~=0,2)&lt;3           %排除两个点的干扰
+         yyn(s,:)=[];         
+         xxn(s,:)=[];
+    end
+
+    s=s+1;
+    %if sum(xx~=0,2)&gt;=3         %sum(xx~=0,2) 统计每一行非0个数   sum(xx~=0,1) sum(xx~=0)代表列
+        %trh=delaunay(yy,xx);
+         cc=stats(n).Perimeter;      %提取周长用于聚类
+          ccn=[ccn;cc];
+
+        are= stats(n).Area  ;     %提取面积用于聚类
+         aren=[aren;are];
+        a=[];
+
+        for i=1:numel(xx)
+            x1=xx(i);%找到区域内第一个点的坐标
+            y1=yy(i);
+            for j=1:numel(xx)%第二个距离最近的点在第一个点之后
+                x2=xx(j);
+                y2=yy(j);
+                Dist=sqrt((x2-x1)^2+(y2-y1)^2);%勾股定理 计算距离
+                a(i,j)=Dist;
+            end
+        end
+
+   % end
+    % 统计特征         %datah 距离矩阵
+
+        for i=1:size(result4,2)
+            datan(t,i)=result4(3,i);
+            datan_1(t,i)=result4(1,i);
+            datan_2(t,i)=result4(2,i);
+        end
+        t=t+1;
+
+    xx=[]; %为了防止点干扰
+    yy=[];
+    j=1;
+yyn(s,j)=round(Area_I4(k).Centroid(1));  %fix 取整，靠近整数
+xxn(s,j)=round(Area_I4(k).Centroid(2));
+ xxn(any(xxn,2)==0,:)=[];
+ yyn(any(yyn,2)==0,:)=[];
+ Reg_point_n=sum(xxn~=0,2);
+
+    %% 长度均值计算-------------------------------------------------------
+D=sum(datan~=0,2);
+
+for i=1:size(datan)           % size() 返回行 
+    meandis_b_n(i,1)=sum(datan(i,:))/D(i);
+
+end
+
+%% 长度方差计算-------------------------------------------------------
+    for i=1:size(datan)           % size() 返回行   两种方法
+         a=datan(i,:);
+        a(find(a==0))=[];
+    meandis_cc(i,1)=mean(a);
+
+end
+for i=1:size(datan)           % size() 返回行 
+    summ=0;
+    for j=1:D(i)
+    sumvarian_b_n(i,1)=(datan(i,j)-meandis_b_n(i,1))^2;
+    summ=summ+sumvarian_b_n(i,1);
+    end
+    varian_b_n(i,1)=summ/(D(i)-1);
+end
+%% 长度偏度计算-------------------------------------------------------
+for i=1:size(datan)           % size() 返回行 
+    a=datan(i,:);
+    a(find(a==0))=[];
+    skewness_b_n(i,1)=skewness(a);           %偏度
+
+end
+
+
+
+    skewness_cc=skewness(datan');%偏度
+%% 长度峰度计算--------------------------------------------------------------
+
+% kurtosis_n=kurtosis(datan');%峰度
+
+for i=1:size(datan)           % size() 返回行 
+    a=datan(i,:);
+    a(find(a==0))=[];
+    kurtosis_b_n(i,1)=kurtosis(a);          
+
+end
+
+%统计个数
+ mean_p_n=mean(Reg_point_n);
+ varian_p_n=var(Reg_point_n);
+ skewness_p_n=skewness(Reg_point_n);
+ kurtosis_p_n=kurtosis(Reg_point_n); 
+%% 角度计算
+  for i=1:size(datan,1)
+      for j=1:D(i,1)-1
+      a=[xxn(i,datan_1(i,j))-xxn(i,datan_2(i,j)),yyn(i,datan_1(i,j))-yyn(i,datan_2(i,j))]; 
+      %a=abs(a);
+      b=[xxn(i,datan_1(i,j+1))-xxn(i,datan_2(i,j+1)),yyn(i,datan_1(i,j+1))-yyn(i,datan_2(i,j+1))];
+      %b=abs(b);
+       al = acos(dot(a,b)/(norm(a)*norm(b)));
+       ans=round(al/pi*180);
+       if datan_2(i,j)==datan_1(i,j+1)
+      angle_n(i,j)=180-ans;  
+       else 
+      angle_n(i,j)=ans;   
+       end
+  end
+  end
+  D=sum(angle_n~=0,2);
+  %% 角度均值计算-------------------------------------------------------
+  for i=1:size(angle_n)           % size() 返回行 
+    meandis_g_n(i,1)=sum(angle_n(i,:))/D(i);
+
+  end
+%% 角度方差计算-------------------------------------------------------
+for i=1:size(angle_n)           % size() 返回行 
+    summ=0;
+    for j=1:D(i)
+    sumvarian_g_n(i,1)=(angle_n(i,j)-meandis_g_n(i,1))^2;
+    summ=summ+sumvarian_g_n(i,1);
+    end
+    varian_g_n(i,1)=summ/(D(i)-1);
+end
+%% 角度偏度计算-------------------------------------------------------
+for i=1:size(angle_n)           % size() 返回行 
+    a=angle_n(i,:);
+    a(find(a==0))=[];
+    skewness_g_n(i,1)=skewness(a);           %偏度
+
+end
+  skewness_cc=skewness(datan');%偏度
+%峰度--------------------------------------------------------------
+ %% 角度峰度计算-------------------------------------------------------
+% kurtosis_n=kurtosis(datan');%峰度
+
+for i=1:size(angle_n)           % size() 返回行 
+    a=angle_n(i,:);
+    a(find(a==0))=[];
+    kurtosis_g_n(i,1)=kurtosis(a);          
+
+end
+clus=2;
+
+sta_n=[varian_b_n,aren,ccn];
+sta_n2=[aren,ccn];
+%sta_n=[varian_b_m,arem,ccm];
+idx_n2=[1];
+for i=1:size(xxn,1)
+    if idx_n2(i,1)==1
+   x=xxn(i,1);
+   y=yyn(i,1);
+   a=K(x,y);
+  [x,y] = find(K==a);
+
+  k = boundary(x,y);
+
+%           rn=I(:,:,1);
+%         gn=I(:,:,2);
+%         bn=I(:,:,3);
+%          idx=find(K~=a); % 元素替换
+% %         M(idx)=0; % 变为0
+%         
+%          rn(idx)=0; % 变为0
+%          gn(idx)=0; 
+%          bn(idx)=0;
+%          figm=cat(3,rn,gn,bn);
+%          figure;
+%          imshow(figm);
+
+  patch(y(k),x(k),'r','facealpha',0.3,'edgecolor','none');
+   hold on     % 轮廓 
+  plot(y(k),x(k),'r')  ;
+
+
+
+%     elseif idx_n(i,1)==2
+%    x=xxn(i,1);
+%    y=yyn(i,1);
+%    a=K(x,y);
+%   [x,y] = find(K==a);
+%   k = boundary(x,y);
+%   patch(y(k),x(k),'r','facealpha',0.5,'edgecolor','none');
+%         
+    else 
+   x=xxn(i,1);
+   y=yyn(i,1);
+   a=K(x,y);
+  [x,y] = find(K==a);
+  k = boundary(x,y);
+
+  patch(y(k),x(k),'r','facealpha',0.5,'edgecolor','none');
+         hold on     % 轮廓 
+  plot(y(k),x(k),'r')  ;
+    end
+end
+sta_n3=0.5*sta_n2;
+figure;
+ f2=[sta_h2;sta_m2(:,:);sta_n3(:,:,:)];
+g2=[idx_h2;idx_m2(:,:)+2;idx_n2(:,:,:)+3];
+
+ save('D:\Desktop\f5.mat','f2');
+ save('D:\Desktop\g5.mat','g2');
+
+silhouette(f2,g2);
+
+%sta_n3=unidrnd(400);
+
+%% 分类尝试
+ssta_h2=length(sta_h2); %提取高密度聚类个数
+ssta_m2=length(sta_m2); %提取中密度聚类个数
+f3=[sta_h2;sta_m2(:,:)]; %总数
+gcl=[ones(ssta_h2,1);2*ones(ssta_m2,1)]; %训练集标签
+[class,err]=classify(sta_n3,f3,gcl); %classify分类
+figure;
+training = [sta_h2;sta_m2(:,:)]; %训练
+group = [ones(ssta_h2,1);repmat(2,ssta_m2,1)]; %标签
+gscatter(training(:,1),training(:,2),group,'rb','+x'); %将高密度和中密度类中所有点绘图
+legend('高密度','中密度');
+hold on;
+sample = sta_n3; %样本为手动标注的区域
+c = knnclassify(sample, training, group); %knn分类
+gscatter(sample(:,1),sample(:,2),c,'gc'); %绘图
+hold on;
+legend('高密度','中密度', ...
+'手工标注属于中密度','手工标注属于高密度');
+hold off;
+
+if class==1  %显示与操作面板上
+    fprintf('您手工标注的细胞图属于高密度');
+else if class==2
+        fprintf('您手工标注的细胞图属于中密度');
+    else
+        fprintf('您手工标注的细胞图属于低密度');
+    end
+end
+%imwrite(I,'stripes2.png');</code></pre>
+<p>Copyright © 2021 Lydia Shaw all Rights Reserved. <a href="http://www.lydiashaw.asia/research_project/DCL2">Back</a>
+</p>
+</body></html>

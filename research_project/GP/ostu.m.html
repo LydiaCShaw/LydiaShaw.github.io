@@ -1,0 +1,44 @@
+﻿<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title></title>
+<style id="system" type="text/css">h1,h2,h3,h4,h5,h6,p,blockquote {    margin: 0;    padding: 0;}body {    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;    font-size: 13px;    line-height: 18px;    color: #737373;    margin: 10px 13px 10px 13px;}a {    color: #0069d6;}a:hover {    color: #0050a3;    text-decoration: none;}a img {    border: none;}p {    margin-bottom: 9px;}h1,h2,h3,h4,h5,h6 {    color: #404040;    line-height: 36px;}h1 {    margin-bottom: 18px;    font-size: 30px;}h2 {    font-size: 24px;}h3 {    font-size: 18px;}h4 {    font-size: 16px;}h5 {    font-size: 14px;}h6 {    font-size: 13px;}hr {    margin: 0 0 19px;    border: 0;    border-bottom: 1px solid #ccc;}blockquote {    padding: 13px 13px 21px 15px;    margin-bottom: 18px;    font-family:georgia,serif;    font-style: italic;}blockquote:before {    content:"C";    font-size:40px;    margin-left:-10px;    font-family:georgia,serif;    color:#eee;}blockquote p {    font-size: 14px;    font-weight: 300;    line-height: 18px;    margin-bottom: 0;    font-style: italic;}code, pre {    font-family: Monaco, Andale Mono, Courier New, monospace;}code {    background-color: #fee9cc;    color: rgba(0, 0, 0, 0.75);    padding: 1px 3px;    font-size: 12px;    -webkit-border-radius: 3px;    -moz-border-radius: 3px;    border-radius: 3px;}pre {    display: block;    padding: 14px;    margin: 0 0 18px;    line-height: 16px;    font-size: 11px;    border: 1px solid #d9d9d9;    white-space: pre-wrap;    word-wrap: break-word;}pre code {    background-color: #fff;    color:#737373;    font-size: 11px;    padding: 0;}@media screen and (min-width: 768px) {    body {        width: 748px;        margin:10px auto;    }}</style><style id="custom" type="text/css"></style></head>
+<body marginheight="0"><h1>otsu.m</h1>
+<pre><code class="lang-javascript">%% 此段为大津阈值分割尝试以及图像分割形态学处理代码
+%运行前请先替换图片存储路径
+%尚麟静
+%基于最小生成树的宫颈癌病理图像聚类研究
+%% 
+clc
+clear
+close all
+I=imread('D:\宇宙第一ADC\____学习\毕业设计\新建文件夹\新建文件夹\he106-1.png');
+%读取图片
+I1=rgb2gray(I); %灰度化
+T=graythresh(I1);
+I2=im2bw(I1,T);   %二值化
+figure,imshow(I2,[]); 
+title('大津阈值二值化')
+%% 形态学处理
+%结构元素
+se=strel('disk',2');
+se2=strel('disk',3');
+se3=strel('disk',4');
+%图像膨胀
+I3=imdilate(I2, se);
+figure,imshow(I3);
+%图像腐蚀
+I4=imerode(I3,se3);
+figure,imshow(I4);
+%图像填充 
+I42=~I4;
+%I4=imfill(I3, 'holes');
+%figure,imshow(I4)
+figure,imshow(I42)
+%骨架化及细化
+BW = bwmorph(I42,'skel',Inf); 
+BW = bwmorph(BW,'thin',Inf);
+figure,imshow(BW);
+imwrite(I42,'106-1.png');</code></pre>
+<p>Copyright © 2021 Lydia Shaw all Rights Reserved. <a href="http://www.lydiashaw.asia/research_project/DCL2">Back</a>
+</p>
+</body></html>
