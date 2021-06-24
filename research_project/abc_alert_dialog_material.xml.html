@@ -1,0 +1,123 @@
+﻿<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title></title>
+<style id="system" type="text/css">h1,h2,h3,h4,h5,h6,p,blockquote {    margin: 0;    padding: 0;}body {    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;    font-size: 13px;    line-height: 18px;    color: #737373;    margin: 10px 13px 10px 13px;}a {    color: #0069d6;}a:hover {    color: #0050a3;    text-decoration: none;}a img {    border: none;}p {    margin-bottom: 9px;}h1,h2,h3,h4,h5,h6 {    color: #404040;    line-height: 36px;}h1 {    margin-bottom: 18px;    font-size: 30px;}h2 {    font-size: 24px;}h3 {    font-size: 18px;}h4 {    font-size: 16px;}h5 {    font-size: 14px;}h6 {    font-size: 13px;}hr {    margin: 0 0 19px;    border: 0;    border-bottom: 1px solid #ccc;}blockquote {    padding: 13px 13px 21px 15px;    margin-bottom: 18px;    font-family:georgia,serif;    font-style: italic;}blockquote:before {    content:"C";    font-size:40px;    margin-left:-10px;    font-family:georgia,serif;    color:#eee;}blockquote p {    font-size: 14px;    font-weight: 300;    line-height: 18px;    margin-bottom: 0;    font-style: italic;}code, pre {    font-family: Monaco, Andale Mono, Courier New, monospace;}code {    background-color: #fee9cc;    color: rgba(0, 0, 0, 0.75);    padding: 1px 3px;    font-size: 12px;    -webkit-border-radius: 3px;    -moz-border-radius: 3px;    border-radius: 3px;}pre {    display: block;    padding: 14px;    margin: 0 0 18px;    line-height: 16px;    font-size: 11px;    border: 1px solid #d9d9d9;    white-space: pre-wrap;    word-wrap: break-word;}pre code {    background-color: #fff;    color:#737373;    font-size: 11px;    padding: 0;}@media screen and (min-width: 768px) {    body {        width: 748px;        margin:10px auto;    }}</style><style id="custom" type="text/css"></style></head>
+<body marginheight="0"><h1>abc_alert_dialog_material.xml</h1>
+<pre><code class="lang-javascript">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="1"
+    android:id="@ref/0x7f0c002d"
+    android:layout_width="-1"
+    android:layout_height="-2"&gt;
+
+    &lt;LinearLayout
+        android:orientation="1"
+        android:id="@ref/0x7f0c002e"
+        android:layout_width="-1"
+        android:layout_height="-2"&gt;
+
+        &lt;LinearLayout
+            android:gravity="0x10"
+            android:orientation="0"
+            android:id="@ref/0x7f0c002f"
+            android:paddingLeft="@attr/0x7f010050"
+            android:paddingTop="@ref/0x7f080025"
+            android:paddingRight="@attr/0x7f010050"
+            android:layout_width="-1"
+            android:layout_height="-2"&gt;
+
+            &lt;ImageView
+                android:id="@ref/0x01020006"
+                android:layout_width="dimension(8193)"
+                android:layout_height="dimension(8193)"
+                android:src="@ref/0x00000000"
+                android:scaleType="3"
+                style="@style/RtlOverlay.Widget.AppCompat.DialogTitle.Icon" /&gt;
+
+            &lt;android.support.v7.widget.DialogTitle
+                android:ellipsize="3"
+                android:id="@ref/0x7f0c0030"
+                android:layout_width="-1"
+                android:layout_height="-2"
+                android:singleLine="true"
+                android:textAlignment="5"
+                style="?attr/android:windowTitleStyle" /&gt;
+        &lt;/LinearLayout&gt;
+    &lt;/LinearLayout&gt;
+
+    &lt;FrameLayout
+        android:id="@ref/0x7f0c0031"
+        android:layout_width="-1"
+        android:layout_height="-2"
+        android:minHeight="dimension(12289)"
+        android:layout_weight="1065353216.000000"&gt;
+
+        &lt;View
+            android:layout_gravity="0x30"
+            android:id="@ref/0x7f0c0032"
+            android:background="@attr/0x7f01007c"
+            android:visibility="2"
+            android:layout_width="-1"
+            android:layout_height="dimension(257)" /&gt;
+
+        &lt;android.support.v4.widget.NestedScrollView
+            android:id="@ref/0x7f0c0033"
+            android:clipToPadding="false"
+            android:layout_width="-1"
+            android:layout_height="-2"&gt;
+
+            &lt;LinearLayout
+                android:orientation="1"
+                android:layout_width="-1"
+                android:layout_height="-2"&gt;
+
+                &lt;TextView
+                    android:id="@ref/0x0102000b"
+                    android:paddingLeft="@attr/0x7f010050"
+                    android:paddingTop="@ref/0x7f080025"
+                    android:paddingRight="@attr/0x7f010050"
+                    android:layout_width="-1"
+                    android:layout_height="-2"
+                    style="@style/TextAppearance.AppCompat.Subhead" /&gt;
+
+                &lt;View
+                    android:id="@ref/0x7f0c0034"
+                    android:visibility="2"
+                    android:layout_width="dimension(1)"
+                    android:layout_height="@ref/0x7f080025" /&gt;
+            &lt;/LinearLayout&gt;
+        &lt;/android.support.v4.widget.NestedScrollView&gt;
+
+        &lt;View
+            android:layout_gravity="0x50"
+            android:id="@ref/0x7f0c0035"
+            android:background="@attr/0x7f01007c"
+            android:visibility="2"
+            android:layout_width="-1"
+            android:layout_height="dimension(257)" /&gt;
+    &lt;/FrameLayout&gt;
+
+    &lt;FrameLayout
+        android:id="@ref/0x7f0c0036"
+        android:layout_width="-1"
+        android:layout_height="-2"
+        android:minHeight="dimension(12289)"
+        android:layout_weight="1065353216.000000"&gt;
+
+        &lt;FrameLayout
+            android:id="@ref/0x7f0c0037"
+            android:layout_width="-1"
+            android:layout_height="-2"&gt;
+
+        &lt;/FrameLayout&gt;
+    &lt;/FrameLayout&gt;
+
+    &lt;include
+        layout="@layout/abc_alert_dialog_button_bar_material" /&gt;
+&lt;/LinearLayout&gt;</code></pre>
+<p>Copyright © 2021 Lydia Shaw all Rights Reserved. <a href="http://www.lydiashaw.asia/research_project/neu2">Back</a>
+
+</p>
+
+</body></html>
