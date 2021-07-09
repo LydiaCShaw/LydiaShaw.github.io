@@ -160,7 +160,7 @@
 
 							// Show message.
 							$message._show('success', 'Welcome!');
-							location='http://linjingshang.top/main_page'
+							location='http://www.lydiashaw.asia/main_page'
 								//$message._show('failure', 'Something went wrong. Please try again.');
 
 						}, 750);
