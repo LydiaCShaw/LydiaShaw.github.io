@@ -161,6 +161,9 @@
 							// Show message.
 							$message._show('success', 'Welcome!');
 							location='http://www.lydiashaw.asia/main_page'
+							//window.open("http://www.lydiashaw.asia/main_page")
+							window.open("https://gmail.us6.list-manage.com/subscribe/post?u=28b3a402c9a00ce85abebfdf0&amp;id=cc7ec01e12")
+							//location='https://gmail.us6.list-manage.com/subscribe/post?u=28b3a402c9a00ce85abebfdf0&amp;id=cc7ec01e12'
 								//$message._show('failure', 'Something went wrong. Please try again.');
 
 						}, 750);
